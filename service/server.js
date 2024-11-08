@@ -36,6 +36,11 @@ pgSQL
     console.log("server ::: pgSQL Failed: " + err.message);
   });
 
+// 동작 확인 (health check endpoint - 쿠버네티스 연결 테스트)
+app.get("/health", (req, res) => {
+  res.status(200).send("OK");
+});
+
 // 라우터 처리
 // const route = require("./node_server/route/classA.js");
 // app.use("/", route);
@@ -47,11 +52,6 @@ app.get("/", function (req, res) {
 });
 app.get("*", function (req, res) {
   res.sendFile(path.join(__dirname, "./react_client/build/index.html"));
-});
-
-// 동작 확인 (health check endpoint - 쿠버네티스 연결 테스트)
-app.get("/health", (req, res) => {
-  res.status(200).send("OK");
 });
 
 const PORT = process.env.NODE_DOCKER_PORT || 5000;
