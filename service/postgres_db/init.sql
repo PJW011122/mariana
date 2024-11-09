@@ -98,4 +98,3 @@ FOR EACH ROW EXECUTE FUNCTION set_timestamp();
 -- 4. 관리자 유저, Markdown 추가
 INSERT INTO cm_user_t (user_id, user_pw, user_level) VALUES ('dev001', '$2a$10$mMlEnNQbdmIjG.7eyxWstuez165utVqSgvwggQHzaeAakYS7RhYwy', 0);
 UPDATE cm_user_t SET user_level = 0 WHERE user_id = 'dev001'; -- 혹시 몰라서 해둔거 실배포 때는 삭제
-INSERT INTO cm_board_t (category, post_id, title, content, user_id) VALUES (15, 'coursepaaran240804', 'MarkDown-Notice', '환영합니다.', 'dev001')
