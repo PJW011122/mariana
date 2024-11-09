@@ -42,26 +42,48 @@ const Crosshair = styled.div`
 function MapRenderer() {
   const mapRef = useRef(null);
   const coordinatesRef = useRef({ longitude: null, latitude: null });
+  const addressFound = useRef(false);
 
   useEffect(() => {
     async function setupMap() {
-      mapRef.current = await initializeClusterMap("v_map");
-
-      mapRef.current.getView().on("change:center", () => {
-        const center = mapRef.current.getView().getCenter();
-        if (center) {
-          const [longitude, latitude] = transform(center, "EPSG:3857", "EPSG:4326");
-          coordinatesRef.current = { longitude, latitude };
+      try {
+        mapRef.current = await initializeClusterMap("v_map");
+        if (mapRef.current) {
+          mapRef.current.getView().on("change:center", () => {
+            const center = mapRef.current.getView().getCenter();
+            if (center) {
+              const [longitude, latitude] = transform(
+                center,
+                "EPSG:3857",
+                "EPSG:4326"
+              );
+              coordinatesRef.current = { longitude, latitude };
+            }
+          });
         }
-      });
+      } catch (error) {
+        console.error("Error initializing map:", error);
+      }
     }
 
     setupMap();
 
-    // Define the handleKeydown function to log the latest coordinates from the ref
     const handleKeydown = (event) => {
-      if (event.key === "Enter" && coordinatesRef.current.longitude !== null && coordinatesRef.current.latitude !== null) {
-        console.log(`Longitude: ${coordinatesRef.current.longitude}, Latitude: ${coordinatesRef.current.latitude}`);
+      if (
+        event.key === "Enter" &&
+        coordinatesRef.current.longitude !== null &&
+        coordinatesRef.current.latitude !== null
+      ) {
+        console.log(
+          `Longitude: ${coordinatesRef.current.longitude}, Latitude: ${coordinatesRef.current.latitude}`
+        );
+        const responseData = {
+          cood_x: coordinatesRef.current.longitude,
+          cood_y: coordinatesRef.current.latitude,
+        };
+
+        localStorage.setItem("address", JSON.stringify(responseData));
+        addressFound.current = true;
       }
     };
 
@@ -73,17 +95,16 @@ function MapRenderer() {
         mapRef.current.setTarget(null);
       }
     };
-  }, []); // Empty dependency array to ensure the map initializes only once
+  }, []);
 
   return (
     <MapContainer>
       <S.Title>
-        <img src={"images/logo.png"} width={160} height={90} />
+        <img src={"images/logo.png"} width={160} height={90} alt="Logo" />
       </S.Title>
       <Controls>
         <input
           id="distance"
-          // ref={distanceInput}
           type="hidden"
           defaultValue="30"
           min="10"
@@ -91,7 +112,6 @@ function MapRenderer() {
         />
         <input
           id="min-distance"
-          // ref={minDistanceInput}
           type="hidden"
           defaultValue="30"
           min="0"
