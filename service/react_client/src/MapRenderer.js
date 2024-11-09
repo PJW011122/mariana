@@ -1,23 +1,33 @@
 import React, { useEffect, useRef } from "react";
-import { logCoordinatesOnReturn } from "./feat/logPositionOnReturn";
 import { initializeClusterMap } from "./feat/clusterMap";
 import styled from "@emotion/styled";
 import "ol/ol.css";
 import { transform } from "ol/proj";
+import {typographies} from "./styles/typhographies";
 
 const MapContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
+  position: relative;
   flex-direction: column;
+  border-radius: 24px;
 `;
 
 const Title = styled.div`
-  padding: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  padding-bottom: 2px;
+  padding-top: 2px;
+  padding-left: 10px;
+  padding-right: 10px;
   background: white;
+  border-radius: 24px;
+  position: fixed;
+  top: 25px;
+  left: 30%;
+  z-index: 1001;
+  ${typographies.PretendardRegular}
+  font-size: 25px;
+  font-weight: 600;
 `;
 
 const Controls = styled.div`
