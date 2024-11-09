@@ -32,14 +32,8 @@ export const fetchAddress = async (
       },
     });
 
-    const cood = response.data.response?.input ?? {
-      point: {
-        x: 0,
-        y: 0,
-      },
-    };
-    const address =
-      response.data.response?.result?.[0]?.text ?? "서울시립대학교";
+    const cood = response.data.response?.input;
+    const address = response.data.response?.result?.[0]?.text;
     if (address) {
       console.log("\tAddress:", address);
       addressFound.current = true;
