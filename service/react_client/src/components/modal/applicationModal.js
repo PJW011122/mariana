@@ -1,28 +1,64 @@
+import React, { useEffect, useState } from "react";
 import styled from "@emotion/styled";
-import { useCallback, useState } from "react";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoHeart } from "react-icons/io5";
+import axios from "axios";
 import { typographies } from "../../styles/typhographies";
 import { useDropzone } from "react-dropzone";
 import { colors } from "../../styles/colors";
 
-const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
-  const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 상태
-  const [afterImage, setAfterImage] = useState(null); // After 이미지 상태
+const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal, postId, userId }) => {
+  const [beforeImage, setBeforeImage] = useState(null);
+  const [afterImage, setAfterImage] = useState(null);
+  const [likes, setLikes] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+
+  useEffect(() => {
+    fetchLikeStatus();
+  }, []);
+
+  const fetchLikeStatus = async () => {
+    try {
+      // Make a GET request to fetch the like count and user's like status for the post
+      const response = await axios.get("/like", { params: { post_id: postId, user_id: userId } });
+      setLikes(response.data.likeCount);
+      setIsLiked(response.data.isLiked); // Assuming the API returns if the user has liked the post
+    } catch (error) {
+      console.error("like GET Error:", error);
+    }
+  };
+
+  const handleLike = async () => {
+    try {
+      if (isLiked) {
+        // If already liked, send a DELETE request to remove the like
+        const response = await axios.delete("/like", { params: { post_id: postId, user_id: userId } });
+        setLikes((prev) => prev - 1);
+      } else {
+        // If not liked, send a POST request to add a like
+        const response = await axios.post("/like", { user_id: userId, post_id: postId });
+        setLikes((prev) => prev + 1);
+      }
+      // Toggle the like status
+      setIsLiked(!isLiked);
+    } catch (error) {
+      console.error("Error updating like status:", error);
+    }
+  };
 
   const closeModal = () => {
     setIsOpenModal(false);
-    setBeforeImage(null); // 모달 닫을 때 Before 이미지 초기화
-    setAfterImage(null); // 모달 닫을 때 After 이미지 초기화
+    setBeforeImage(null);
+    setAfterImage(null);
   };
 
   const onDropBefore = (acceptedFiles) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setBeforeImage(reader.result); // Before 이미지 미리보기
+      setBeforeImage(reader.result);
     };
     if (file) {
-      reader.readAsDataURL(file); // 파일을 URL로 변환
+      reader.readAsDataURL(file);
     }
   };
 
@@ -30,10 +66,10 @@ const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
     reader.onloadend = () => {
-      setAfterImage(reader.result); // After 이미지 미리보기
+      setAfterImage(reader.result);
     };
     if (file) {
-      reader.readAsDataURL(file); // 파일을 URL로 변환
+      reader.readAsDataURL(file);
     }
   };
 
@@ -74,6 +110,12 @@ const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
               )}
             </S.Dropzone>
           </S.ImagesContainer>
+          <S.LikeContainer>
+            <S.LikeButton onClick={handleLike}>
+              <IoHeart size={24} color={isLiked ? "#ff7a50" : "#ccc"} />
+            </S.LikeButton>
+            <S.LikeCount>{likes}</S.LikeCount>
+          </S.LikeContainer>
           <S.Textarea placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"} />
           <S.ButtonContainer>
             <S.Button>
@@ -105,7 +147,7 @@ const S = {
     height: 600px;
     width: 360px;
     border-radius: 12px;
-    padding: 20px; /* Padding 추가 */
+    padding: 20px;
   `,
   Header: styled.div`
     display: flex;
@@ -120,11 +162,10 @@ const S = {
     align-items: center;
     gap: 10px;
   `,
-
   ImagesContainer: styled.div`
     display: flex;
-    justify-content: space-between; /* 두 영역을 좌우로 나누기 */
-    margin-top: 20px; /* 상단 여백 추가 */
+    justify-content: space-between;
+    margin-top: 20px;
     gap: 20px;
   `,
   Dropzone: styled.div`
@@ -135,9 +176,9 @@ const S = {
     justify-content: center;
     align-items: center;
     height: 200px;
-    width: 48%; /* 두 영역을 나누기 위한 너비 */
+    width: 48%;
     background-color: #f9f9f9;
-    flex-direction: column; /* 세로 정렬 */
+    flex-direction: column;
   `,
   ImagePreview: styled.img`
     max-width: 100%;
@@ -151,14 +192,14 @@ const S = {
   `,
   Textarea: styled.textarea`
     border: 2px solid #cccccc;
-    margin-top: 20px;
-    width: 99%;
+    margin-top: 10px;
+    width: 100%;
     height: 120px;
     background-color: #f9f9f9;
   `,
   ButtonContainer: styled.div`
     display: flex;
-    padding-top: 50px;
+    padding-top: 20px;
     justify-content: flex-end;
     width: 100%;
     height: 100%;
@@ -172,6 +213,33 @@ const S = {
     border-radius: 7px;
     ${typographies.NeoButtonL};
     background-color: ${colors.Main_Yellow200};
+  `,
+  LikeContainer: styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    position: relative;
+    right: -125px;
+    top: -10px;
+  `,
+  LikeButton: styled.button`
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+
+    &:hover {
+      transform: scale(1.1);
+    }
+  `,
+  LikeCount: styled.div`
+    margin-top: 5px;
+    font-size: 16px;
+    color: #ff7a50;
+    text-align: center;
   `,
 };
 

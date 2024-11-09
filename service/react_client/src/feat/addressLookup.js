@@ -5,8 +5,8 @@ import delay from '../utils';
 
 const apiKey = '3142667A-1CDE-31C1-A644-FD5537E3F09B';
 const retryDistance = 0.0001;
-const maxRetries = 10;
-const delayDuration = 10; // Delay duration in milliseconds
+const maxRetries = 5;
+const delayDuration = 5; // Delay duration in milliseconds
 
 export const fetchAddress = async (longitude, latitude, attempt, addressFound) => {
   if (addressFound.current) return false;
@@ -72,6 +72,6 @@ export const retryNearbyPoints = async (longitude, latitude, attempt, addressFou
     await delay(delayDuration);
     await retryNearbyPoints(longitude, latitude, attempt + 1, addressFound);
   } else if (!addressFound.current) {
-    console.log('No address found after maximum attempts.');
+    alert('No address found after maximum attempts.');
   }
 };
