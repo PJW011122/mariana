@@ -3,9 +3,10 @@ import axios from 'axios';
 
 function MapTest() {
   const vmapRef = useRef(null);
+  const addressFound = useRef(false);
   const apiKey = '3142667A-1CDE-31C1-A644-FD5537E3F09B';
-  const retryDistance = 0.0001; // Small increment for latitude and longitude adjustments
-  const maxRetries = 50; // Maximum number of retries in each direction
+  const retryDistance = 0.0001;
+  const maxRetries = 5;
 
   useEffect(() => {
     const initMap = () => {
@@ -43,6 +44,8 @@ function MapTest() {
     initMap();
 
     const fetchAddress = async (longitude, latitude, attempt = 1) => {
+      if (addressFound.current) return false; // Early exit if address is found
+
       try {
         const response = await axios.get(`/req/address`, {
           params: {
@@ -61,42 +64,55 @@ function MapTest() {
 
         const address = response.data.response?.result?.[0]?.text;
         if (address) {
-          console.log('Address:', address);
-        } else if (attempt <= maxRetries) {
-          console.log(`Attempt ${attempt}: Address not found. Trying nearby points...`);
-          // Try surrounding points in multiple directions
-          retryNearbyPoints(longitude, latitude, attempt);
+          console.log('\tAddress:', address);
+          addressFound.current = true;
+          return true; // Indicate address was found
         } else {
-          console.log('No address found after multiple attempts.');
+          console.log(`Attempt ${attempt}: Address not found at (${longitude}, ${latitude}).`);
+          return false; // Indicate address not found
         }
       } catch (error) {
         console.error('Error fetching address:', error);
+        return false; // Indicate failure to proceed to the next point
       }
     };
 
-    const retryNearbyPoints = (longitude, latitude, attempt) => {
-      // Define offsets for surrounding points
+    const retryNearbyPoints = async (longitude, latitude, attempt) => {
+      const currentDistance = retryDistance * attempt;
       const offsets = [
-        [retryDistance * attempt, retryDistance * attempt],   // Top-right
-        [-retryDistance * attempt, retryDistance * attempt],  // Top-left
-        [retryDistance * attempt, -retryDistance * attempt],  // Bottom-right
-        [-retryDistance * attempt, -retryDistance * attempt], // Bottom-left
-        [0, retryDistance * attempt],                        // Up
-        [0, -retryDistance * attempt],                       // Down
-        [retryDistance * attempt, 0],                        // Right
-        [-retryDistance * attempt, 0]                        // Left
+        [currentDistance, currentDistance],
+        [-currentDistance, currentDistance],
+        [currentDistance, -currentDistance],
+        [-currentDistance, -currentDistance],
+        [0, currentDistance],
+        [0, -currentDistance],
+        [currentDistance, 0],
+        [-currentDistance, 0]
       ];
 
-      offsets.forEach(([lngOffset, latOffset]) => {
-        fetchAddress(longitude + lngOffset, latitude + latOffset, attempt + 1);
-      });
+      for (let i = 0; i < offsets.length; i++) {
+        if (addressFound.current) return; // Stop if address is found during retries
+
+        const [lngOffset, latOffset] = offsets[i];
+        const found = await fetchAddress(longitude + lngOffset, latitude + latOffset, attempt);
+        if (found) return; // Stop further processing if address is found
+      }
+
+      // If all offsets for the current attempt level failed, increase distance and retry
+      if (!addressFound.current && attempt < maxRetries) {
+        console.log(`Increasing search radius, attempt ${attempt + 1}`);
+        await retryNearbyPoints(longitude, latitude, attempt + 1);
+      } else if (!addressFound.current) {
+        console.log('No address found after maximum attempts.');
+      }
     };
 
     const logAddressOnReturn = (event) => {
       if (event.code === 'Enter' && vmapRef.current) {
+        addressFound.current = false; // Reset the flag for a new address lookup
         const center = vmapRef.current.getView().getCenter();
         const [longitude, latitude] = window.ol.proj.transform(center, 'EPSG:3857', 'EPSG:4326');
-        fetchAddress(longitude, latitude);
+        retryNearbyPoints(longitude, latitude, 1);
       }
     };
 
