@@ -1,0 +1,52 @@
+# Volumes: Docker 컨테이너는 독립적인 실행 환경을 제공하지만,
+#          호스트 컴퓨터의 파일 시스템과 연결하여 파일을 공유할 수 있는데 이때 volumes를 사용
+
+services:
+  db:
+    container_name: "postgres_db"
+    build:
+      context: ./service/postgres_db
+      dockerfile: Dockerfile.db
+    restart: "on-failure"
+    env_file: ./.env
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - POSTGRES_DB=${DB_DATABASE}
+    ports:
+      - "${DB_LOCAL_PORT}:${DB_DOCKER_PORT}"
+    volumes:
+      - db_data:/var/lib/postgresql/data # 데이터 지속성을 위한 볼륨
+
+  server:
+    depends_on:
+      - db
+    container_name: "node_server"
+    build:
+      context: ./service # Express 서버 Dockerfile 경로
+      dockerfile: Dockerfile.server
+    restart: "on-failure"
+    env_file: ./.env
+    ports: # 포트 설정 (Local로 입력 -> Docker 내부 컨테이너 동작)
+      - ${NODE_LOCAL_PORT}:${NODE_DOCKER_PORT}
+    environment:
+      - DB_HOST=db
+      - DB_USER=${DB_USER}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_NAME=${DB_DATABASE}
+      - DB_PORT=${DB_DOCKER_PORT}
+      - CHOKIDAR_USEPOLLING=true # 파일 시스템 감시 문제 해결
+    stdin_open: true
+    tty: true
+
+  client:
+    container_name: "react_client"
+    build:
+      context: ./service/react_client # React 클라이언트 Dockerfile 경로
+      dockerfile: Dockerfile.client
+    restart: "on-failure"
+    ports: # 포트 설정 (Local로 입력 -> Docker 내부 컨테이너 동작)
+      - ${REACT_LOCAL_PORT}:${REACT_DOCKER_PORT}
+
+volumes:
+  db_data:
