@@ -11,38 +11,6 @@ const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
     setIsOpenModal(false);
   };
 
-  const [preview, setPreview] = useState("");
-  const [value, setValue] = useState("");
-  const [image, setImage] = useState(null);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setValue((preValues) => ({
-      ...preValues,
-      [name]: value,
-    }));
-
-    if (e.target.name === "imageUrl") {
-      setPreview(e.target.value);
-    }
-  };
-
-  const onDrop = (aceeptedFiles) => {
-    const reader = new FileReader();
-    const file = aceeptedFiles;
-
-    if (file) {
-      reader.readAsDataURL(file[0]);
-      setImage(file[0]);
-    }
-    reader.onload = (e) => {
-      setPreview(reader.result);
-      document.getElementsByName("imageUrl")[0].value = "";
-    };
-  };
-
-  const { getRootProps, getInputProps } = useDropzone({ onDrop });
-
   if (isOpenModal)
     return (
       <S.Wrapper onClick={closeModal}>
