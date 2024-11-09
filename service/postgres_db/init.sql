@@ -12,7 +12,6 @@ COMMENT ON TABLE public.cm_user_t IS '공통_user_tb';
 -- cm_board_t 테이블
 CREATE TABLE cm_board_t (
     post_id varchar NOT NULL,
-    title varchar NOT NULL,
     content varchar NULL,
     req_user_id varchar NULL,
     res_user_id varchar NULL,
@@ -23,7 +22,6 @@ CREATE TABLE cm_board_t (
     co_address varchar NULL,
     co_status int4 NULL,
     post_file varchar NULL,
-    category_detail varchar NULL,
     CONSTRAINT cm_board_t_pk PRIMARY KEY (post_id),
     CONSTRAINT unique_post_file UNIQUE (post_file)
 );
