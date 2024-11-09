@@ -42,6 +42,14 @@ CREATE TABLE cm_comment_t (
 );
 COMMENT ON TABLE public.cm_comment_t IS 'comment & reply';
 
+-- cm_board_t 테이블
+CREATE TABLE cm_boardlike_t (
+    like_id varchar NOT NULL,
+    post_id varchar NOT NULL,
+    user_id varchar NULL,
+    CONSTRAINT cm_boardlike_t_pk PRIMARY KEY (like_id)
+);
+
 -- 2. 트리거 함수 생성
 
 CREATE OR REPLACE FUNCTION public.set_timestamp()
