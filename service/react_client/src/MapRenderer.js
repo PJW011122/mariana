@@ -83,7 +83,7 @@ function MapRenderer() {
       <Controls>
         <input
           id="distance"
-          ref={distanceInput}
+          // ref={distanceInput}
           type="hidden"
           defaultValue="30"
           min="10"
@@ -91,7 +91,7 @@ function MapRenderer() {
         />
         <input
           id="min-distance"
-          ref={minDistanceInput}
+          // ref={minDistanceInput}
           type="hidden"
           defaultValue="30"
           min="0"
