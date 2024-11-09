@@ -13,8 +13,16 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
   const [content, setContent] = useState(""); // 내용 상태
 
   const addressJson = localStorage.getItem("address");
-  const userId = localStorage.getItem("userId");
-  const { cood_x, cood_y, street_address } = JSON.parse(addressJson);
+  let cood_x = 0;
+  let cood_y = 0;
+  let street_address = "주소 없음";
+
+  if (addressJson) {
+    const parsedAddress = JSON.parse(addressJson);
+    cood_x = parsedAddress.cood_x || 0;
+    cood_y = parsedAddress.cood_y || 0;
+    street_address = parsedAddress.street_address || "주소 없음";
+  }
 
   const closeModal = () => {
     setIsOpenModal(false);
