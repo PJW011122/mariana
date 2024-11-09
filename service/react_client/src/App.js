@@ -4,7 +4,6 @@ import ApplyModal from "./components/modal/applicationModal";
 import GlobalStyle from "./styles/GlobalStyle";
 import styled from "@emotion/styled";
 import { IoMdAddCircle } from "react-icons/io";
-import { FaUser, FaPlus } from "react-icons/fa6";
 import MapRenderer from "./MapRenderer";
 import SignupModal from "./components/modal/SignupModal";
 import LoginModal from "./components/modal/LoginModal";
@@ -12,6 +11,9 @@ import MyPageModal from "./components/modal/MyPageModal";
 import { Toaster } from "react-hot-toast";
 import { typographies } from "./styles/typhographies";
 import { colors } from "./styles/colors";
+import { FaUserCircle } from "react-icons/fa";
+import { FaPlus, FaUser } from "react-icons/fa6";
+import axios from "axios";
 
 function App() {
   const [isOpenMarkerModal, setIsOpenMarkerModal] = useState(false);
@@ -27,6 +29,7 @@ function App() {
   const isOpenModalFunc = () => setIsOpenMarkerModal(true);
   const isOpenModalFunc2 = () => setIsOpenSignupModal(true);
   const isOpenModalFunc3 = () => setIsOpenLoginModal(true);
+  const [boadrData, setBoadrData] = useState({});
 
   useEffect(() => {
     const isSignup = localStorage.getItem("isSignup");
@@ -44,7 +47,7 @@ function App() {
 
   // Handle marker click to open ApplyModal
   const handleMarkerClick = (postId, coordX, coordY) => {
-    console.log('Clicked Marker Coordinates:', coordX, coordY);
+    console.log("Clicked Marker Coordinates:", coordX, coordY);
     setSelectedPostId(postId);
     setSelectedCoordX(coordX);
     setSelectedCoordY(coordY);

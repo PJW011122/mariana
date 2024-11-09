@@ -81,7 +81,6 @@ export async function initializeClusterMap(
       });
       return feature;
     });
-    console.log(features, "피처");
 
     const source = new VectorSource({ features });
 

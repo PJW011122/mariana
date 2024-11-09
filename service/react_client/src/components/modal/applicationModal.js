@@ -7,8 +7,14 @@ import { colors } from "../../styles/colors";
 import { encode, decode } from "../../asset/util/encodeName.js";
 import axios from "axios";
 
-const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
-  console.log(coordX, coordY);
+const ApplyModal = ({
+  isOpenModal,
+  setIsOpenModal,
+  postId,
+  coordX,
+  coordY,
+}) => {
+  console.log("application 호출", coordX, coordY, postId);
 
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
   const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
@@ -17,6 +23,50 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
   const [afterImagePath, setAfterImagePath] = useState(null); // Before 이미지 Path
   const [afterImageExtension, setAfterImageExtension] = useState(""); // After 이미지 확장자
   const [content, setContent] = useState(""); // 내용 상태
+  const [postData, setPostData] = useState(null); // 내용 상태
+
+  useEffect(() => {
+    setContent("");
+    setBeforeImage(null);
+    setAfterImage(null);
+    // postId가 존재할 때만 GET 요청 수행
+
+    if (postId) {
+      const fetchData = async () => {
+        try {
+          const param = {
+            post_id: postId,
+          };
+          const response = await axios.get("/board", { params: param });
+          const data = response.data;
+
+          setPostData(data);
+          setContent(data.rows[0].content);
+
+          console.log("postId를 통한 호출", data.rows[0]);
+
+          // 파일 경로가 유효하면 이미지 URL로 설정
+          if (data.rows[0].req_file_path) {
+            const response = await axios.get("/file/download", {
+              params: { fileName: data.rows[0].req_file_path },
+              responseType: "blob",
+            });
+            setBeforeImage(URL.createObjectURL(response.data)); // 이미지 미리보기 URL 생성
+          }
+          if (data.rows[0].res_file_path) {
+            const response = await axios.get("/file/download", {
+              params: { fileName: data.rows[0].res_file_path },
+              responseType: "blob",
+            });
+            setAfterImage(URL.createObjectURL(response.data)); // 이미지 미리보기 URL 생성
+          }
+        } catch (error) {
+          console.error("manageBoard GET Error:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [postId]); // postId가 변경될 때마다 실행
 
   const addressJson = localStorage.getItem("address");
   let cood_x = 0;
@@ -37,27 +87,26 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
     setAfterImage(null); // 모달 닫을 때 After 이미지 초기화
   };
 
+  const handleCheckClick = async () => {
+    console.log("인증으로 들어오는 중");
+    const data = {
+      post_id: postData.rows[0].post_id, // 게시물 내용
+      res_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
+      res_file_path: afterImagePath, // 요청자의 파일 경로
+      res_file_extension: afterImageExtension, // 요청자의 파일 확장자
+      co_status: 1, // 상태 값
+    };
+    // PUT 요청 함수
+    try {
+      const response = await axios.put("/board", data);
+      window.location.reload();
+    } catch (error) {
+      console.error("manageBoard PUT Error:", error);
+      throw error;
+    }
+  };
   const handleSaveClick = async () => {
-    // let data = {};
-
-    // if (post.post_id) {
-    //   // 기존 게시글이 있는 상태 (onClick)
-    //   data = {
-    //     post_id: post.post_id, // 게시물 내용
-    //     res_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
-    //     res_file_path: afterImagePath, // 요청자의 파일 경로
-    //     res_file_extension: afterImageExtension, // 요청자의 파일 확장자
-    //     co_status: 1, // 상태 값
-    //   };
-    //   // PUT 요청 함수
-    //   try {
-    //     const response = await axios.put("/board", data);
-    //     return response.data;
-    //   } catch (error) {
-    //     console.error("manageBoard PUT Error:", error);
-    //     throw error;
-    //   }
-    // } else {
+    console.log("저장으로 들어오는 중");
     const data = {
       content: content, // 게시물 내용
       req_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
@@ -71,13 +120,12 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
 
     // POST 요청 함수
     try {
-      const response = await axios.post("/board", data);
-      return response.data;
+      await axios.post("/board", data);
+      window.location.reload();
     } catch (error) {
       console.error("manageBoard POST Error:", error);
       throw error;
     }
-    // }
   };
 
   // Before 사진 드래그 로직
@@ -204,7 +252,9 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
           <S.Header>
             <S.TextWrapper>
               <S.Title>제보 올리기</S.Title>
-              <S.Description>{coordX}, {coordY}</S.Description>
+              <S.Description>
+                {coordX}, {coordY}
+              </S.Description>
             </S.TextWrapper>
           </S.Header>
           <S.ImagesContainer>
@@ -227,13 +277,22 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
           </S.ImagesContainer>
           <S.Textarea
             placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"}
+            value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          <S.ButtonContainer>
-            <S.Button onClick={handleSaveClick}>
-              <div>저장</div>
-            </S.Button>
-          </S.ButtonContainer>
+          {postData?.rows[0]?.req_file_path ? (
+            <S.ButtonContainer>
+              <S.CheckButton onClick={handleCheckClick}>
+                <div>인증</div>
+              </S.CheckButton>
+            </S.ButtonContainer>
+          ) : (
+            <S.ButtonContainer>
+              <S.ReportButton onClick={handleSaveClick}>
+                <div>저장</div>
+              </S.ReportButton>
+            </S.ButtonContainer>
+          )}
         </S.Container>
       </S.Wrapper>
     );
@@ -321,7 +380,7 @@ const S = {
     width: 100%;
     height: 100%;
   `,
-  Button: styled.div`
+  ReportButton: styled.div`
     width: 100px;
     height: 50px;
     display: flex;
@@ -331,6 +390,17 @@ const S = {
     ${typographies.PretendardRegular};
     font-size: 20px;
     background-color: ${colors.Main_Yellow200};
+  `,
+  CheckButton: styled.div`
+    width: 100px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    ${typographies.PretendardRegular};
+    font-size: 20px;
+    background-color: ${colors.Main_Red500};
   `,
   IconContainer: styled.div`
     position: absolute;

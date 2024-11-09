@@ -14,6 +14,7 @@ const api_Signin = require("../api/api_Signin.js");
 const api_Signup = require("../api/api_Signup.js");
 const api_Level = require("../api/api_Level.js");
 const api_Like = require("../api/api_Like.js");
+const api_User = require("../api/api_User.js");
 
 router.use("/file", classB_File);
 router.use("/board", api_Board);
@@ -21,5 +22,6 @@ router.use("/signin", api_Signin);
 router.use("/signup", api_Signup);
 router.use("/level", api_Level);
 router.use("/like", api_Like);
+router.use("/user", api_User);
 
 module.exports = router;

@@ -56,7 +56,12 @@ function MapRenderer({ onMarkerClick }) {
   useEffect(() => {
     async function setupMap() {
       try {
-        mapRef.current = await initializeClusterMap("v_map", null, null, onMarkerClick);
+        mapRef.current = await initializeClusterMap(
+          "v_map",
+          null,
+          null,
+          onMarkerClick
+        );
         if (mapRef.current) {
           mapRef.current.getView().on("change:center", () => {
             const center = mapRef.current.getView().getCenter();
@@ -106,6 +111,24 @@ function MapRenderer({ onMarkerClick }) {
     };
   }, [onMarkerClick]);
 
+  const handleCrossHeader = () => {
+    if (
+      coordinatesRef.current.longitude !== null &&
+      coordinatesRef.current.latitude !== null
+    ) {
+      console.log(
+        `Longitude: ${coordinatesRef.current.longitude}, Latitude: ${coordinatesRef.current.latitude}`
+      );
+      const responseData = {
+        cood_x: coordinatesRef.current.longitude,
+        cood_y: coordinatesRef.current.latitude,
+      };
+
+      localStorage.setItem("address", JSON.stringify(responseData));
+      addressFound.current = true;
+    }
+  };
+
   return (
     <MapContainer>
       <Title>
@@ -128,7 +151,7 @@ function MapRenderer({ onMarkerClick }) {
         />
       </Controls>
       <MapWrapper id="v_map">
-        <Crosshair vertical />
+        <Crosshair vertical onClick={handleCrossHeader} />
         <Crosshair />
       </MapWrapper>
     </MapContainer>
