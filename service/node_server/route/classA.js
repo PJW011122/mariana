@@ -10,8 +10,12 @@ const router = require("express").Router();
 // 연결 페이지 설정
 const classB_File = require("./classB_File");
 const api_Board = require("../api/api_Board.js");
+const api_Signin = require("../api/api_Signin.js");
+const api_Signup = require("../api/api_Signup.js");
 
 router.use("/file", classB_File);
 router.use("/board", api_Board);
+router.use("/signin", api_Signin);
+router.use("/signup", api_Signup);
 
 module.exports = router;
