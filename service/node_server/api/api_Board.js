@@ -85,7 +85,11 @@ router
     Object.entries(req.body).forEach(([key, value]) => {
       count = count + 1;
       values.push(value);
-      if (key === "title" || key === "content") {
+      if (
+        key === "res_user_id" ||
+        key === "res_file_path" ||
+        key === "res_file_extension"
+      ) {
         conditions.push(`${key} = $${count}`);
       } else {
         conditions2.push(`${key} = $${count}`);

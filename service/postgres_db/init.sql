@@ -14,16 +14,18 @@ CREATE TABLE cm_board_t (
     post_id varchar NOT NULL,
     content varchar NULL,
     req_user_id varchar NULL,
+    req_file_path varchar NULL,
+    req_file_extension varchar NULL,
     res_user_id varchar NULL,
+    res_file_path varchar NULL,
+    res_file_extension varchar NULL,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,
     coord_x float8 NULL,
     coord_y float8 NULL,
     co_address varchar NULL,
     co_status int4 NULL,
-    post_file varchar NULL,
-    CONSTRAINT cm_board_t_pk PRIMARY KEY (post_id),
-    CONSTRAINT unique_post_file UNIQUE (post_file)
+    CONSTRAINT cm_board_t_pk PRIMARY KEY (post_id)
 );
 
 -- cm_comment_t 테이블
@@ -39,21 +41,6 @@ CREATE TABLE cm_comment_t (
     CONSTRAINT cm_comment_t_cm_board_t_fk FOREIGN KEY (post_id) REFERENCES cm_board_t(post_id) ON DELETE CASCADE
 );
 COMMENT ON TABLE public.cm_comment_t IS 'comment & reply';
-
--- cm_file_t 테이블
-CREATE TABLE cm_file_t (
-    file_id varchar NOT NULL,
-    post_file varchar NOT NULL,
-    file_path varchar NOT NULL,
-    file_size varchar NOT NULL,
-    file_mimetype varchar NOT NULL,
-    created_at timestamp DEFAULT CURRENT_TIMESTAMP NOT NULL,
-    file_name varchar NOT NULL, -- file_originalname
-    file_extension varchar NOT NULL,
-    CONSTRAINT cm_file_t_pk PRIMARY KEY (file_id),
-    CONSTRAINT cm_file_t_cm_board_t_fk FOREIGN KEY (post_file) REFERENCES cm_board_t(post_file) ON DELETE CASCADE
-);
-COMMENT ON COLUMN public.cm_file_t.file_name IS 'file_originalname';
 
 -- 2. 트리거 함수 생성
 
