@@ -1,8 +1,8 @@
-import React, { useEffect, useRef } from 'react';
-import { logAddressOnReturn } from './feat/logPositionOnReturn';
-import { initializeClusterMap } from './feat/clusterMap';
+import React, { useEffect, useRef } from "react";
+import { logAddressOnReturn } from "./feat/logPositionOnReturn";
+import { initializeClusterMap } from "./feat/clusterMap";
 import styled from "@emotion/styled";
-import 'ol/ol.css';
+import "ol/ol.css";
 
 const MapContainer = styled.div`
   width: 100%;
@@ -27,9 +27,10 @@ const Crosshair = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;
-  transform: ${props => props.vertical ? 
-    'translate(-50%, -50%) rotate(90deg)' : 
-    'translate(-50%, -50%)'};
+  transform: ${(props) =>
+    props.vertical
+      ? "translate(-50%, -50%) rotate(90deg)"
+      : "translate(-50%, -50%)"};
   width: 2px;
   height: 24px;
   background-color: red;
@@ -42,14 +43,19 @@ function MapRenderer() {
   const mapRef = useRef(null);
   const addressFound = useRef(false);
 
-  useEffect(() => {
-    mapRef.current = initializeClusterMap('v_map', distanceInput.current, minDistanceInput.current);
+  const handleKeydown = logAddressOnReturn(mapRef, addressFound);
 
-    const handleKeydown = logAddressOnReturn(mapRef, addressFound);
-    window.addEventListener('keydown', handleKeydown);
+  useEffect(() => {
+    mapRef.current = initializeClusterMap(
+      "v_map",
+      distanceInput.current,
+      minDistanceInput.current,
+    );
+
+    window.addEventListener("keydown", handleKeydown);
 
     return () => {
-      window.removeEventListener('keydown', handleKeydown);
+      window.removeEventListener("keydown", handleKeydown);
       if (mapRef.current) {
         mapRef.current.setTarget(null);
       }
@@ -60,9 +66,23 @@ function MapRenderer() {
     <MapContainer>
       <Controls>
         <label>Cluster Distance: </label>
-        <input id="distance" ref={distanceInput} type="number" defaultValue="30" min="10" max="200" />
+        <input
+          id="distance"
+          ref={distanceInput}
+          type="number"
+          defaultValue="30"
+          min="10"
+          max="200"
+        />
         <label> Min Distance: </label>
-        <input id="min-distance" ref={minDistanceInput} type="number" defaultValue="30" min="0" max="100" />
+        <input
+          id="min-distance"
+          ref={minDistanceInput}
+          type="number"
+          defaultValue="30"
+          min="0"
+          max="100"
+        />
       </Controls>
       <MapWrapper id="v_map">
         <Crosshair vertical />

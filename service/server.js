@@ -28,13 +28,13 @@ app.use(express.urlencoded({ extended: true })); // parse requests of content-ty
 // postgreSQL과 연결
 const pgSQL = require("./postgres_db/index.js");
 pgSQL
-  .connect()
-  .then(() => {
-    console.log("server ::: pgSQL connected");
-  })
-  .catch((err) => {
-    console.log("server ::: pgSQL Failed: " + err.message);
-  });
+    .connect()
+    .then(() => {
+      console.log("server ::: pgSQL connected");
+    })
+    .catch((err) => {
+      console.log("server ::: pgSQL Failed: " + err.message);
+    });
 
 // 동작 확인 (health check endpoint - 쿠버네티스 연결 테스트)
 app.get("/health", (req, res) => {
