@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
-import { logAddressOnReturn } from './logPositionOnReturn';
-import { initializeClusterMap } from './clusterMap';
+import { logAddressOnReturn } from './feat/logPositionOnReturn';
+import { initializeClusterMap } from './feat/clusterMap';
 
 function MapTest() {
   const distanceInput = useRef(null);

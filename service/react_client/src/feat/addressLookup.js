@@ -1,7 +1,7 @@
 // addressLookup.js
 
 import axios from 'axios';
-import delay from './utils';
+import delay from '../utils';
 
 const apiKey = '3142667A-1CDE-31C1-A644-FD5537E3F09B';
 const retryDistance = 0.0001;
