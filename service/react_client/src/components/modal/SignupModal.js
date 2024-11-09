@@ -32,6 +32,7 @@ const SignupModal = ({ isOpenModal, setIsOpenModal }) => {
       user_pw: password,
     });
     toast.success("회원가입에 성공하셨어요!");
+    localStorage.setItem("isSignup", true);
     setError("");
     closeModal(); // 모달 닫기
   };

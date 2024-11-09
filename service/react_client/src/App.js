@@ -1,6 +1,6 @@
 import "./App.css";
 import ApplyModal from "./components/modal/applicationModal";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import GlobalStyle from "./styles/GlobalStyle";
 import styled from "@emotion/styled";
 import { IoMdAddCircle } from "react-icons/io";
@@ -13,7 +13,7 @@ function App() {
   const [isOpenMarkerModal, setIsOpenMarkerModal] = useState(false);
   const [isOpenSignupModal, setIsOpenSignupModal] = useState(false);
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
-  const [address, setAddress] = useState("");
+  const [plusButtonType, setPlusButtonType] = useState("");
 
   const isOpenModalFunc = () => {
     setIsOpenMarkerModal(true);
@@ -25,6 +25,20 @@ function App() {
 
   const isOpenModalFunc3 = () => {
     setIsOpenLoginModal(true);
+  };
+
+  useEffect(() => {
+    const isSignup = localStorage.getItem("isSignup");
+    const userId = localStorage.getItem("userId");
+
+    if (isSignup && !userId) setPlusButtonType("logIn");
+    if (!isSignup) setPlusButtonType("signUp");
+  }, []);
+
+  const handlePlusButtonType = () => {
+    if (plusButtonType === "signUp") return isOpenModalFunc2;
+    if (plusButtonType === "logIn") return isOpenModalFunc3;
+    return isOpenModalFunc;
   };
 
   return (
@@ -41,7 +55,7 @@ function App() {
           </S.BodyContent>
         </S.Body>
         <S.BottomTab>
-          <S.PlusIconContainer onClick={isOpenModalFunc}>
+          <S.PlusIconContainer onClick={handlePlusButtonType()}>
             <IoMdAddCircle size={130} />
           </S.PlusIconContainer>
         </S.BottomTab>
