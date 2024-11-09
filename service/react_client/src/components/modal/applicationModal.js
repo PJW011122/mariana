@@ -1,15 +1,14 @@
 import styled from "@emotion/styled";
-import { useState } from "react";
 import { useCallback, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { typographies } from "../../styles/typhographies";
 import { useDropzone } from "react-dropzone";
-import {colors} from "../../styles/colors";
+import { colors } from "../../styles/colors";
 
 const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 상태
   const [afterImage, setAfterImage] = useState(null); // After 이미지 상태
-  
+
   const closeModal = () => {
     setIsOpenModal(false);
     setBeforeImage(null); // 모달 닫을 때 Before 이미지 초기화
@@ -38,47 +37,51 @@ const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
     }
   };
 
-  const { getRootProps: getRootPropsBefore, getInputProps: getInputPropsBefore } = useDropzone({ onDrop: onDropBefore });
-  const { getRootProps: getRootPropsAfter, getInputProps: getInputPropsAfter } = useDropzone({ onDrop: onDropAfter });
+  const {
+    getRootProps: getRootPropsBefore,
+    getInputProps: getInputPropsBefore,
+  } = useDropzone({ onDrop: onDropBefore });
+  const { getRootProps: getRootPropsAfter, getInputProps: getInputPropsAfter } =
+    useDropzone({ onDrop: onDropAfter });
 
   if (isOpenModal)
     return (
-        <S.Wrapper onClick={closeModal}>
-          <S.Container onClick={(e) => e.stopPropagation()}>
-            <S.Header>
-              <S.TextWrapper>
-                <S.Title>게시글 올리기</S.Title>
-              </S.TextWrapper>
-              <S.TextWrapper onClick={closeModal}>
-                <IoClose size={30} />
-              </S.TextWrapper>
-            </S.Header>
-            <S.ImagesContainer>
-              <S.Dropzone {...getRootPropsBefore()} style={{ cursor: 'pointer' }}>
-                <input {...getInputPropsBefore()} />
-                {beforeImage ? (
-                    <S.ImagePreview src={beforeImage} alt="Before" />
-                ) : (
-                    <div>Before 사진을 드래그하거나 클릭하여 업로드하세요.</div>
-                )}
-              </S.Dropzone>
-              <S.Dropzone {...getRootPropsAfter()} style={{ cursor: 'pointer' }}>
-                <input {...getInputPropsAfter()} />
-                {afterImage ? (
-                    <S.ImagePreview src={afterImage} alt="After" />
-                ) : (
-                    <div>After 사진을 드래그하거나 클릭하여 업로드하세요.</div>
-                )}
-              </S.Dropzone>
-            </S.ImagesContainer>
-            <S.Textarea placeholder={'전동 킥보드는 어떻게 놓여있었나요?!'}/>
-            <S.ButtonContainer>
-              <S.Button>
-                <div>저장</div>
-              </S.Button>
-            </S.ButtonContainer>
-          </S.Container>
-        </S.Wrapper>
+      <S.Wrapper onClick={closeModal}>
+        <S.Container onClick={(e) => e.stopPropagation()}>
+          <S.Header>
+            <S.TextWrapper>
+              <S.Title>게시글 올리기</S.Title>
+            </S.TextWrapper>
+            <S.TextWrapper onClick={closeModal}>
+              <IoClose size={30} />
+            </S.TextWrapper>
+          </S.Header>
+          <S.ImagesContainer>
+            <S.Dropzone {...getRootPropsBefore()} style={{ cursor: "pointer" }}>
+              <input {...getInputPropsBefore()} />
+              {beforeImage ? (
+                <S.ImagePreview src={beforeImage} alt="Before" />
+              ) : (
+                <div>Before 사진을 드래그하거나 클릭하여 업로드하세요.</div>
+              )}
+            </S.Dropzone>
+            <S.Dropzone {...getRootPropsAfter()} style={{ cursor: "pointer" }}>
+              <input {...getInputPropsAfter()} />
+              {afterImage ? (
+                <S.ImagePreview src={afterImage} alt="After" />
+              ) : (
+                <div>After 사진을 드래그하거나 클릭하여 업로드하세요.</div>
+              )}
+            </S.Dropzone>
+          </S.ImagesContainer>
+          <S.Textarea placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"} />
+          <S.ButtonContainer>
+            <S.Button>
+              <div>저장</div>
+            </S.Button>
+          </S.ButtonContainer>
+        </S.Container>
+      </S.Wrapper>
     );
 };
 
@@ -122,7 +125,7 @@ const S = {
     display: flex;
     justify-content: space-between; /* 두 영역을 좌우로 나누기 */
     margin-top: 20px; /* 상단 여백 추가 */
-    gap:20px
+    gap: 20px;
   `,
   Dropzone: styled.div`
     border: 2px dashed #cccccc;
