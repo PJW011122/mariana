@@ -1,15 +1,17 @@
+import React, { useEffect, useState } from "react";
 import "./App.css";
 import ApplyModal from "./components/modal/applicationModal";
-import { useEffect, useState } from "react";
 import GlobalStyle from "./styles/GlobalStyle";
 import styled from "@emotion/styled";
 import { IoMdAddCircle } from "react-icons/io";
+import { FaUser, FaPlus } from "react-icons/fa6";
 import MapRenderer from "./MapRenderer";
 import SignupModal from "./components/modal/SignupModal";
 import LoginModal from "./components/modal/LoginModal";
+import MyPageModal from "./components/modal/MyPageModal";
 import { Toaster } from "react-hot-toast";
 import { typographies } from "./styles/typhographies";
-import { colors } from "./styles/colors"; // Make sure path is correct
+import { colors } from "./styles/colors";
 import { FaUserCircle } from "react-icons/fa";
 import { FaPlus, FaUser } from "react-icons/fa6";
 import MyPageModal from "./components/modal/MyPageModal";
@@ -21,19 +23,15 @@ function App() {
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [plusButtonType, setPlusButtonType] = useState("");
+  const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedCoordX, setSelectedCoordX] = useState(null);
+  const [selectedCoordY, setSelectedCoordY] = useState(null);
+
+  // Functions to open each modal
+  const isOpenModalFunc = () => setIsOpenMarkerModal(true);
+  const isOpenModalFunc2 = () => setIsOpenSignupModal(true);
+  const isOpenModalFunc3 = () => setIsOpenLoginModal(true);
   const [boadrData, setBoadrData] = useState({});
-
-  const isOpenModalFunc = () => {
-    setIsOpenMarkerModal(true);
-  };
-
-  const isOpenModalFunc2 = () => {
-    setIsOpenSignupModal(true);
-  };
-
-  const isOpenModalFunc3 = () => {
-    setIsOpenLoginModal(true);
-  };
 
   useEffect(() => {
     const isSignup = localStorage.getItem("isSignup");
@@ -49,12 +47,21 @@ function App() {
     return isOpenModalFunc;
   };
 
+  // Handle marker click to open ApplyModal
+  const handleMarkerClick = (postId, coordX, coordY) => {
+    console.log("Clicked Marker Coordinates:", coordX, coordY);
+    setSelectedPostId(postId);
+    setSelectedCoordX(coordX);
+    setSelectedCoordY(coordY);
+    setIsOpenMarkerModal(true);
+  };
+
   return (
     <>
       <GlobalStyle />
       <S.Container>
         <S.Body>
-          <MapRenderer />
+          <MapRenderer onMarkerClick={handleMarkerClick} />
         </S.Body>
         <S.BottomTab>
           <S.PlusIconContainer onClick={handlePlusButtonType()}>
@@ -67,6 +74,9 @@ function App() {
         <ApplyModal
           isOpenModal={isOpenMarkerModal}
           setIsOpenModal={setIsOpenMarkerModal}
+          postId={selectedPostId}
+          coordX={selectedCoordX} // Pass coordX
+          coordY={selectedCoordY} // Pass coordY
         />
         <SignupModal
           isOpenModal={isOpenSignupModal}
@@ -85,6 +95,7 @@ function App() {
     </>
   );
 }
+
 const S = {
   Container: styled.div`
     max-width: 420px;
@@ -112,14 +123,6 @@ const S = {
     justify-content: center;
     align-content: center;
     background: white;
-    border-radius: 24px;
-  `,
-  BodyContent: styled.div`
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-content: center;
     border-radius: 24px;
   `,
   BottomTab: styled.div`
@@ -169,8 +172,8 @@ const S = {
     border-radius: 7px;
     ${typographies.NeoButtonL};
     background-color: ${colors.Main_Yellow200};
-    border: none; /* 버튼의 기본 테두리 제거 */
-    cursor: pointer; /* 커서 포인터로 변경 */
+    border: none;
+    cursor: pointer;
   `,
   Title: styled.div`
     ${typographies.PretendardRegular}
