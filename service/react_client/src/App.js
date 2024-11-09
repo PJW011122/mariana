@@ -4,24 +4,41 @@ import { useState } from "react";
 import GlobalStyle from "./styles/GlobalStyle";
 import styled from "@emotion/styled";
 import { IoMdAddCircle } from "react-icons/io";
-import MapRenderer from "./MapRenderer";  // Make sure path is correct
+import MapRenderer from "./MapRenderer";
+import SignupModal from "./components/modal/SignupModal";
+import LoginModal from "./components/modal/LoginModal";
+import { Toaster } from "react-hot-toast"; // Make sure path is correct
 
 function App() {
-  const [isOpenModal, setIsOpenModal] = useState(true);
+  const [isOpenMarkerModal, setIsOpenMarkerModal] = useState(false);
+  const [isOpenSignupModal, setIsOpenSignupModal] = useState(false);
+  const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
+  const [address, setAddress] = useState("");
+
   const isOpenModalFunc = () => {
-    setIsOpenModal(true);
+    setIsOpenMarkerModal(true);
   };
+
+  const isOpenModalFunc2 = () => {
+    setIsOpenSignupModal(true);
+  };
+
+  const isOpenModalFunc3 = () => {
+    setIsOpenLoginModal(true);
+  };
+
   return (
     <>
       <GlobalStyle />
       <S.Container>
+        <Toaster />
         <S.Top>
           <div>상단</div>
         </S.Top>
         <S.Body>
           <S.BodyContent>
-              <MapRenderer />
-        </S.BodyContent>
+            <MapRenderer />
+          </S.BodyContent>
         </S.Body>
         <S.BottomTab>
           <S.PlusIconContainer onClick={isOpenModalFunc}>
@@ -29,10 +46,16 @@ function App() {
           </S.PlusIconContainer>
         </S.BottomTab>
         <ApplyModal
-          description={"sdds"}
-          title={"sdd"}
-          isOpenModal={isOpenModal}
-          setIsOpenModal={setIsOpenModal}
+          isOpenModal={isOpenMarkerModal}
+          setIsOpenModal={setIsOpenMarkerModal}
+        />
+        <SignupModal
+          isOpenModal={isOpenSignupModal}
+          setIsOpenModal={setIsOpenSignupModal}
+        />
+        <LoginModal
+          isOpenModal={isOpenLoginModal}
+          setIsOpenModal={setIsOpenLoginModal}
         />
       </S.Container>
     </>

@@ -1,48 +1,67 @@
 // addressLookup.js
 
-import axios from 'axios';
-import delay from '../utils';
+import axios from "axios";
+import delay from "../utils";
 
-const apiKey = '3142667A-1CDE-31C1-A644-FD5537E3F09B';
+const apiKey = "3142667A-1CDE-31C1-A644-FD5537E3F09B";
 const retryDistance = 0.0001;
 const maxRetries = 10;
 const delayDuration = 10; // Delay duration in milliseconds
 
-export const fetchAddress = async (longitude, latitude, attempt, addressFound) => {
+export const fetchAddress = async (
+  longitude,
+  latitude,
+  attempt,
+  addressFound,
+) => {
   if (addressFound.current) return false;
 
   try {
     const response = await axios.get(`/req/address`, {
       params: {
-        service: 'address',
-        request: 'getAddress',
-        version: '2.0',
-        crs: 'epsg:4326',
+        service: "address",
+        request: "getAddress",
+        version: "2.0",
+        crs: "epsg:4326",
         point: `${longitude},${latitude}`,
-        format: 'json',
-        type: 'road',
-        zipcode: 'true',
-        simple: 'false',
+        format: "json",
+        type: "road",
+        zipcode: "true",
+        simple: "false",
         key: apiKey,
       },
     });
 
+    const cood = response.data.response?.input;
     const address = response.data.response?.result?.[0]?.text;
     if (address) {
-      console.log('\tAddress:', address);
+      console.log("\tAddress:", address);
       addressFound.current = true;
+      const responseData = {
+        cood_x: cood.point.x,
+        cood_y: cood.point.y,
+        street_address: address,
+      };
+      localStorage.setItem("address", JSON.stringify(responseData));
       return true;
     } else {
-      console.log(`Attempt ${attempt}: Address not found at (${longitude}, ${latitude}).`);
+      console.log(
+        `Attempt ${attempt}: Address not found at (${longitude}, ${latitude}).`,
+      );
       return false;
     }
   } catch (error) {
-    console.error('Error fetching address:', error);
+    console.error("Error fetching address:", error);
     return false;
   }
 };
 
-export const retryNearbyPoints = async (longitude, latitude, attempt, addressFound) => {
+export const retryNearbyPoints = async (
+  longitude,
+  latitude,
+  attempt,
+  addressFound,
+) => {
   if (addressFound.current) return;
 
   const currentDistance = retryDistance * attempt;
@@ -61,7 +80,12 @@ export const retryNearbyPoints = async (longitude, latitude, attempt, addressFou
     if (addressFound.current) return;
 
     const [lngOffset, latOffset] = offsets[i];
-    const found = await fetchAddress(longitude + lngOffset, latitude + latOffset, attempt, addressFound);
+    const found = await fetchAddress(
+      longitude + lngOffset,
+      latitude + latOffset,
+      attempt,
+      addressFound,
+    );
     if (found) return;
 
     await delay(delayDuration);
@@ -72,6 +96,6 @@ export const retryNearbyPoints = async (longitude, latitude, attempt, addressFou
     await delay(delayDuration);
     await retryNearbyPoints(longitude, latitude, attempt + 1, addressFound);
   } else if (!addressFound.current) {
-    console.log('No address found after maximum attempts.');
+    console.log("No address found after maximum attempts.");
   }
 };
