@@ -4,12 +4,16 @@ import { IoClose } from "react-icons/io5";
 import { typographies } from "../../styles/typhographies";
 import { useDropzone } from "react-dropzone";
 import { colors } from "../../styles/colors";
+import { encode, decode } from "../../asset/util/encodeName.js";
 import axios from "axios";
 
 const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
+  const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
   const [beforeImageExtension, setBeforeImageExtension] = useState(""); // Before 이미지 확장자
   const [afterImage, setAfterImage] = useState(null); // After 이미지 상태
+  const [afterImagePath, setAfterImagePath] = useState(null); // Before 이미지 Path
+  const [afterImageExtension, setAfterImageExtension] = useState(""); // After 이미지 확장자
   const [content, setContent] = useState(""); // 내용 상태
 
   const addressJson = localStorage.getItem("address");
@@ -31,10 +35,35 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
     setAfterImage(null); // 모달 닫을 때 After 이미지 초기화
   };
 
+  const handleSaveClick = async () => {
+    alert("저장 버튼이 클릭되었습니다.");
+
+    const data = {
+      content: content, // 게시물 내용
+      req_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
+      req_file_path: beforeImagePath, // 요청자의 파일 경로
+      req_file_extension: beforeImageExtension, // 요청자의 파일 확장자
+      coord_x: cood_x, // X 좌표 (위도)
+      coord_y: cood_y, // Y 좌표 (경도)
+      co_address: street_address, // 주소
+      co_status: 1, // 상태 값
+    };
+
+    // POST 요청 함수
+    try {
+      const response = await axios.post("/board", data);
+      return response.data;
+    } catch (error) {
+      console.error("manageBoard POST Error:", error);
+      throw error;
+    }
+  };
+
   // Before 사진 드래그 로직
   const onDropBefore = (acceptedFiles) => {
     const file = acceptedFiles[0];
     const reader = new FileReader();
+
     reader.onloadend = () => {
       setBeforeImage(reader.result); // Before 이미지 미리보기
       setBeforeImageExtension(file.type.split("/").pop()); // 확장자 추출
@@ -42,6 +71,43 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
     if (file) {
       reader.readAsDataURL(file); // 파일을 URL로 변환
     }
+
+    // 파일 업로드를 위한 FormData 생성 및 인코딩된 파일 이름 설정
+    const formData = new FormData();
+    const fileName = file.name;
+    const dotIndex = fileName.lastIndexOf(".");
+    const nameWithoutExt = fileName.substring(0, dotIndex);
+    const ext = fileName.substring(dotIndex);
+
+    // 파일 이름을 인코딩하여 확장자와 결합
+    const encodedFileName = encode(nameWithoutExt) + ext;
+    formData.append("file", file, encodedFileName); // 인코딩된 이름으로 파일 추가
+
+    // 서버에 파일 업로드
+    axios
+      .post("/file/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        // 서버에서 받은 파일 이름을 디코딩
+        const originalFileName = response.data.file.originalname;
+        const dotIndex = originalFileName.lastIndexOf(".");
+        const encodedName = originalFileName.substring(0, dotIndex);
+        const ext = originalFileName.substring(dotIndex);
+
+        // 이름을 디코딩하여 확장자와 결합
+        const decodedFileName = decode(encodedName) + ext;
+
+        // 파일 정보 업데이트
+        const fileInfo = response.data.file;
+        fileInfo.originalname = decodedFileName; // 디코딩된 이름 사용
+        setBeforeImagePath(fileInfo.filename); // Before 이미지 미리보기
+      })
+      .catch((error) => {
+        console.error("파일 업로드 실패:", error);
+      });
   };
 
   useEffect(() => {
@@ -60,10 +126,48 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
     const reader = new FileReader();
     reader.onloadend = () => {
       setAfterImage(reader.result); // After 이미지 미리보기
+      setAfterImageExtension(file.type.split("/").pop()); // 확장자 추출
     };
     if (file) {
       reader.readAsDataURL(file); // 파일을 URL로 변환
     }
+
+    // 파일 업로드를 위한 FormData 생성 및 인코딩된 파일 이름 설정
+    const formData = new FormData();
+    const fileName = file.name;
+    const dotIndex = fileName.lastIndexOf(".");
+    const nameWithoutExt = fileName.substring(0, dotIndex);
+    const ext = fileName.substring(dotIndex);
+
+    // 파일 이름을 인코딩하여 확장자와 결합
+    const encodedFileName = encode(nameWithoutExt) + ext;
+    formData.append("file", file, encodedFileName); // 인코딩된 이름으로 파일 추가
+
+    // 서버에 파일 업로드
+    axios
+      .post("/file/upload", formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      })
+      .then((response) => {
+        // 서버에서 받은 파일 이름을 디코딩
+        const originalFileName = response.data.file.originalname;
+        const dotIndex = originalFileName.lastIndexOf(".");
+        const encodedName = originalFileName.substring(0, dotIndex);
+        const ext = originalFileName.substring(dotIndex);
+
+        // 이름을 디코딩하여 확장자와 결합
+        const decodedFileName = decode(encodedName) + ext;
+
+        // 파일 정보 업데이트
+        const fileInfo = response.data.file;
+        fileInfo.originalname = decodedFileName; // 디코딩된 이름 사용
+        setAfterImagePath(fileInfo.filename); // Before 이미지 미리보기
+      })
+      .catch((error) => {
+        console.error("파일 업로드 실패:", error);
+      });
   };
 
   const { getRootProps: getRootPropsAfter, getInputProps: getInputPropsAfter } =
@@ -103,7 +207,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
             onChange={(e) => setContent(e.target.value)}
           />
           <S.ButtonContainer>
-            <S.Button>
+            <S.Button onClick={handleSaveClick}>
               <div>저장</div>
             </S.Button>
           </S.ButtonContainer>
