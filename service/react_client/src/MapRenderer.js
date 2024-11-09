@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from "react";
-import { logAddressOnReturn } from "./feat/logPositionOnReturn";
 import { initializeClusterMap } from "./feat/clusterMap";
 import styled from "@emotion/styled";
+import { transform } from "ol/proj";
 import "ol/ol.css";
 import { typographies } from "./styles/typhographies";
 
@@ -40,19 +40,30 @@ const Crosshair = styled.div`
 `;
 
 function MapRenderer() {
-  const distanceInput = useRef(null);
-  const minDistanceInput = useRef(null);
   const mapRef = useRef(null);
-  const addressFound = useRef(false);
-
-  const handleKeydown = logAddressOnReturn(mapRef, addressFound);
+  const coordinatesRef = useRef({ longitude: null, latitude: null });
 
   useEffect(() => {
-    mapRef.current = initializeClusterMap(
-      "v_map",
-      distanceInput.current,
-      minDistanceInput.current,
-    );
+    async function setupMap() {
+      mapRef.current = await initializeClusterMap("v_map");
+
+      mapRef.current.getView().on("change:center", () => {
+        const center = mapRef.current.getView().getCenter();
+        if (center) {
+          const [longitude, latitude] = transform(center, "EPSG:3857", "EPSG:4326");
+          coordinatesRef.current = { longitude, latitude };
+        }
+      });
+    }
+
+    setupMap();
+
+    // Define the handleKeydown function to log the latest coordinates from the ref
+    const handleKeydown = (event) => {
+      if (event.key === "Enter" && coordinatesRef.current.longitude !== null && coordinatesRef.current.latitude !== null) {
+        console.log(`Longitude: ${coordinatesRef.current.longitude}, Latitude: ${coordinatesRef.current.latitude}`);
+      }
+    };
 
     window.addEventListener("keydown", handleKeydown);
 
@@ -62,7 +73,7 @@ function MapRenderer() {
         mapRef.current.setTarget(null);
       }
     };
-  }, []);
+  }, []); // Empty dependency array to ensure the map initializes only once
 
   return (
     <MapContainer>
