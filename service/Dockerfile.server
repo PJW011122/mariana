@@ -1,0 +1,25 @@
+##### WAS Part ##### 
+FROM node:lts
+
+# 작업 디렉터리 설정
+WORKDIR /usr/src/app/
+
+# package.json 및 package-lock.json 파일 복사 및 의존성 설치
+COPY ./package*.json ./
+RUN npm install --silent   
+RUN npm install -g nodemon
+
+# 소스 코드 복사
+COPY . .
+
+# 디렉터리 생성 스크립트 복사 및 실행 권한 부여
+COPY create_upload_dirs.sh /usr/src/app/create_upload_dirs.sh
+RUN chmod +x /usr/src/app/create_upload_dirs.sh
+
+##### RUN Part #####
+
+# 컨테이너 시작 시 스크립트를 실행하고 서버를 시작
+CMD ["/bin/sh", "-c", "/usr/src/app/create_upload_dirs.sh && npm start"]
+
+# 서버 부담 줄이기 위해 --silent
+# nodemon 오류 원천 봉쇄 위해 전역 설치

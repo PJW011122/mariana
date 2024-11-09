@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import { useState } from "react";
+import { useCallback, useState } from "react";
 import { IoClose } from "react-icons/io5";
 import { typographies } from "../../styles/typhographies";
 import { useDropzone } from "react-dropzone";
@@ -8,7 +9,7 @@ import {colors} from "../../styles/colors";
 const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 상태
   const [afterImage, setAfterImage] = useState(null); // After 이미지 상태
-
+  
   const closeModal = () => {
     setIsOpenModal(false);
     setBeforeImage(null); // 모달 닫을 때 Before 이미지 초기화
@@ -116,6 +117,7 @@ const S = {
     align-items: center;
     gap: 10px;
   `,
+
   ImagesContainer: styled.div`
     display: flex;
     justify-content: space-between; /* 두 영역을 좌우로 나누기 */

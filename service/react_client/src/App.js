@@ -4,6 +4,7 @@ import { useState } from "react";
 import GlobalStyle from "./styles/GlobalStyle";
 import styled from "@emotion/styled";
 import { IoMdAddCircle } from "react-icons/io";
+import MapRenderer from "./MapRenderer";  // Make sure path is correct
 
 function App() {
   const [isOpenModal, setIsOpenModal] = useState(true);
@@ -18,7 +19,9 @@ function App() {
           <div>상단</div>
         </S.Top>
         <S.Body>
-          <S.BodyContent>메인(지도)asdsd</S.BodyContent>
+          <S.BodyContent>
+              <MapRenderer />
+        </S.BodyContent>
         </S.Body>
         <S.BottomTab>
           <S.PlusIconContainer onClick={isOpenModalFunc}>
@@ -35,9 +38,6 @@ function App() {
     </>
   );
 }
-
-export default App;
-
 const S = {
   Container: styled.div`
     max-width: 420px;
@@ -91,3 +91,5 @@ const S = {
     left: 35%;
   `,
 };
+
+export default App;
