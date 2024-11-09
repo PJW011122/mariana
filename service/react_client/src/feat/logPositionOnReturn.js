@@ -1,13 +1,15 @@
 // logPositionOnReturn.js
 
-import { transform } from 'ol/proj.js';
+import { transform } from "ol/proj.js";
+import { retryNearbyPoints } from "./addressLookup.js";
 
-export function logCoordinatesOnReturn(vmapRef) {
-  return function(event) {
-    if (event.key === 'Enter' && vmapRef.current) {
+export function logAddressOnReturn(vmapRef, addressFound) {
+  return function (event) {
+    if (event.key === "Enter" && vmapRef.current) {
+      addressFound.current = false;
       const center = vmapRef.current.getView().getCenter();
-      const [longitude, latitude] = transform(center, 'EPSG:3857', 'EPSG:4326');
-      console.log(`Coordinates: Longitude: ${longitude}, Latitude: ${latitude}`);
+      const [longitude, latitude] = transform(center, "EPSG:3857", "EPSG:4326");
+      retryNearbyPoints(longitude, latitude, 1, addressFound);
     }
   };
 }
