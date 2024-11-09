@@ -85,14 +85,10 @@ router
     Object.entries(req.body).forEach(([key, value]) => {
       count = count + 1;
       values.push(value);
-      if (
-        key === "res_user_id" ||
-        key === "res_file_path" ||
-        key === "res_file_extension"
-      ) {
-        conditions.push(`${key} = $${count}`);
-      } else {
+      if (key === "post_id") {
         conditions2.push(`${key} = $${count}`);
+      } else {
+        conditions.push(`${key} = $${count}`);
       }
     });
     const conditionClause = conditions.length

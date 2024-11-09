@@ -14,7 +14,7 @@ const ApplyModal = ({
   coordX,
   coordY,
 }) => {
-  console.log(coordX, coordY);
+  console.log("application 호출", coordX, coordY, postId);
 
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
   const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
@@ -23,6 +23,50 @@ const ApplyModal = ({
   const [afterImagePath, setAfterImagePath] = useState(null); // Before 이미지 Path
   const [afterImageExtension, setAfterImageExtension] = useState(""); // After 이미지 확장자
   const [content, setContent] = useState(""); // 내용 상태
+  const [postData, setPostData] = useState(null); // 내용 상태
+
+  useEffect(() => {
+    setContent("");
+    setBeforeImage(null);
+    setAfterImage(null);
+    // postId가 존재할 때만 GET 요청 수행
+
+    if (postId) {
+      const fetchData = async () => {
+        try {
+          const param = {
+            post_id: postId,
+          };
+          const response = await axios.get("/board", { params: param });
+          const data = response.data;
+
+          setPostData(data);
+          setContent(data.rows[0].content);
+
+          console.log("postId를 통한 호출", data.rows[0]);
+
+          // 파일 경로가 유효하면 이미지 URL로 설정
+          if (data.rows[0].req_file_path) {
+            const response = await axios.get("/file/download", {
+              params: { fileName: data.rows[0].req_file_path },
+              responseType: "blob",
+            });
+            setBeforeImage(URL.createObjectURL(response.data)); // 이미지 미리보기 URL 생성
+          }
+          if (data.rows[0].res_file_path) {
+            const response = await axios.get("/file/download", {
+              params: { fileName: data.rows[0].res_file_path },
+              responseType: "blob",
+            });
+            setAfterImage(URL.createObjectURL(response.data)); // 이미지 미리보기 URL 생성
+          }
+        } catch (error) {
+          console.error("manageBoard GET Error:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [postId]); // postId가 변경될 때마다 실행
 
   const addressJson = localStorage.getItem("address");
   let cood_x = 0;
@@ -44,8 +88,9 @@ const ApplyModal = ({
   };
 
   const handleCheckClick = async () => {
+    console.log("인증으로 들어오는 중");
     const data = {
-      post_id: postId, // 게시물 내용
+      post_id: postData.rows[0].post_id, // 게시물 내용
       res_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
       res_file_path: afterImagePath, // 요청자의 파일 경로
       res_file_extension: afterImageExtension, // 요청자의 파일 확장자
@@ -61,6 +106,7 @@ const ApplyModal = ({
     }
   };
   const handleSaveClick = async () => {
+    console.log("저장으로 들어오는 중");
     const data = {
       content: content, // 게시물 내용
       req_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
@@ -231,9 +277,10 @@ const ApplyModal = ({
           </S.ImagesContainer>
           <S.Textarea
             placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"}
+            value={content}
             onChange={(e) => setContent(e.target.value)}
           />
-          {postId ? (
+          {postData?.rows[0]?.req_file_path ? (
             <S.ButtonContainer>
               <S.CheckButton onClick={handleCheckClick}>
                 <div>인증</div>
