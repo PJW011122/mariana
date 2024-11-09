@@ -11,30 +11,37 @@ const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
     setIsOpenModal(false);
   };
 
-  const [thumbnailPreview, setThumbnailPreview] = useState();
-  //사진이 추가됐을 때 그 사진의 정보 상태담기
-  const onDropThumbnail = useCallback((acceptedFiles) => {
-    const file = acceptedFiles[0];
-    //file 첫번째 파일을 저장
-    const fileURL = URL.createObjectURL(file);
-    //createObjectURL는 임시로 URL을 저장할수 있는 메서드
-    setThumbnailPreview({ url: fileURL, name: file.name, size: file.size });
-  }, []);
+  const [preview, setPreview] = useState("");
+  const [value, setValue] = useState("");
+  const [image, setImage] = useState(null);
 
-  //받는 이미지 확장자 리밋 설정
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
-    //이미지가 들어가면 실행되는 함수
-    onDrop: onDropThumbnail,
-    accept: {
-      "image/*": [".jpeg", ".jpg", ".png"],
-    },
-  });
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setValue((preValues) => ({
+      ...preValues,
+      [name]: value,
+    }));
 
-  //저장된 상태 삭제하기 ( 이미지 삭제 )
-  const handleDeleteThumbnail = (e) => {
-    e.stopPropagation(); // 이벤트 버블링 막기 위해 사용
-    setThumbnailPreview(undefined);
+    if (e.target.name === "imageUrl") {
+      setPreview(e.target.value);
+    }
   };
+
+  const onDrop = (aceeptedFiles) => {
+    const reader = new FileReader();
+    const file = aceeptedFiles;
+
+    if (file) {
+      reader.readAsDataURL(file[0]);
+      setImage(file[0]);
+    }
+    reader.onload = (e) => {
+      setPreview(reader.result);
+      document.getElementsByName("imageUrl")[0].value = "";
+    };
+  };
+
+  const { getRootProps, getInputProps } = useDropzone({ onDrop });
 
   if (isOpenModal)
     return (
@@ -49,12 +56,9 @@ const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
             </S.TextWrapper>
           </S.Header>
           <div {...getRootProps()}>
-            <input {...getInputProps} />
-            {isDragActive ? (
-              <p>여기에 놓아주세요.</p>
-            ) : (
-              <p>이미지를 여기에 드롭하시거나, 클릭주세요.</p>
-            )}
+            <div>dsd</div>
+            <image src={preview} />
+            <input {...getInputProps()} multiple={false} name="imageUrl" />
           </div>
         </S.Container>
       </S.Wrapper>
@@ -107,6 +111,12 @@ const S = {
     font-size: 25px;
     font-weight: 600;
   `,
+  ImageContainer: styled.div`
+    width: 40px;
+    height: 40px;
+    border: 1px black solid;
+  `,
+  Image: styled.image``,
 };
 
 export default ApplyModal;
