@@ -7,7 +7,7 @@ import { colors } from "../../styles/colors";
 import { encode, decode } from "../../asset/util/encodeName.js";
 import axios from "axios";
 
-const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
+const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
   const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
   const [beforeImageExtension, setBeforeImageExtension] = useState(""); // Before 이미지 확장자
@@ -36,8 +36,26 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
   };
 
   const handleSaveClick = async () => {
-    alert("저장 버튼이 클릭되었습니다.");
+    // let data = {};
 
+    // if (post.post_id) {
+    //   // 기존 게시글이 있는 상태 (onClick)
+    //   data = {
+    //     post_id: post.post_id, // 게시물 내용
+    //     res_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
+    //     res_file_path: afterImagePath, // 요청자의 파일 경로
+    //     res_file_extension: afterImageExtension, // 요청자의 파일 확장자
+    //     co_status: 1, // 상태 값
+    //   };
+    //   // PUT 요청 함수
+    //   try {
+    //     const response = await axios.put("/board", data);
+    //     return response.data;
+    //   } catch (error) {
+    //     console.error("manageBoard PUT Error:", error);
+    //     throw error;
+    //   }
+    // } else {
     const data = {
       content: content, // 게시물 내용
       req_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
@@ -46,7 +64,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
       coord_x: cood_x, // X 좌표 (위도)
       coord_y: cood_y, // Y 좌표 (경도)
       co_address: street_address, // 주소
-      co_status: 1, // 상태 값
+      co_status: 0, // 상태 값
     };
 
     // POST 요청 함수
@@ -57,6 +75,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {
       console.error("manageBoard POST Error:", error);
       throw error;
     }
+    // }
   };
 
   // Before 사진 드래그 로직
