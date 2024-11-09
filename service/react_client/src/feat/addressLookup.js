@@ -12,7 +12,7 @@ export const fetchAddress = async (
   longitude,
   latitude,
   attempt,
-  addressFound,
+  addressFound
 ) => {
   if (addressFound.current) return false;
 
@@ -46,7 +46,7 @@ export const fetchAddress = async (
       return true;
     } else {
       console.log(
-        `Attempt ${attempt}: Address not found at (${longitude}, ${latitude}).`,
+        `Attempt ${attempt}: Address not found at (${longitude}, ${latitude}).`
       );
       return false;
     }
@@ -60,7 +60,7 @@ export const retryNearbyPoints = async (
   longitude,
   latitude,
   attempt,
-  addressFound,
+  addressFound
 ) => {
   if (addressFound.current) return;
 
@@ -84,7 +84,7 @@ export const retryNearbyPoints = async (
       longitude + lngOffset,
       latitude + latOffset,
       attempt,
-      addressFound,
+      addressFound
     );
     if (found) return;
 

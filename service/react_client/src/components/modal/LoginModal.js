@@ -21,13 +21,14 @@ const LoginModal = ({ isOpenModal, setIsOpenModal }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // 회원가입 로직 추가 (API 호출 등)
-    const response = await axios.post("https://mariana.paaran.com/signin", {
+    const response = await axios.post("/signin", {
       user_id: username,
       user_pw: password,
     });
     localStorage.setItem("userId", response.data);
     toast.success("로그인에 성공하셨어요!");
     setError("");
+    window.location.reload();
     closeModal(); // 모달 닫기
   };
 
@@ -63,7 +64,7 @@ const LoginModal = ({ isOpenModal, setIsOpenModal }) => {
             </S.InputContainer>
             <S.ButtonContainer>
               <S.Button type="submit">
-                <div>회원가입</div>
+                <div>로그인</div>
               </S.Button>
             </S.ButtonContainer>
           </form>
