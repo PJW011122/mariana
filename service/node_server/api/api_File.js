@@ -7,7 +7,6 @@ const pgSQL = require("../../postgres_db/index");
 // 현재 파일이 있는 디렉토리 경로 (__dirname)
 const tempDir = path.join(__dirname, "..", "uploads", "temp");
 const officialDir = path.join(__dirname, "..", "uploads", "official");
-const geojsonDir = path.join(__dirname, "..", "uploads", "geojson");
 
 // 파일 존재 여부 확인 및 삭제 함수
 async function deleteFile(filePath) {
@@ -43,19 +42,10 @@ router.delete("/", async (req, res) => {
       .status(400)
       .json({ message: "파일 이름이 제공되지 않았습니다." });
   }
-  const fileExt = path.extname(fileName).toLowerCase();
   const tempFilePath = path.resolve(tempDir, fileName);
   const officialFilePath = path.resolve(officialDir, fileName);
-  const geojsonFileName = `${path.basename(fileName, fileExt)}.geojson`;
-  const geojsonFilePath = path.join(geojsonDir, geojsonFileName);
 
   try {
-    fs.stat(geojsonFilePath, async (err, stats) => {
-      if (err) {
-      } else {
-        await deleteFile(geojsonFilePath);
-      }
-    });
     fs.stat(tempFilePath, async (err, stats) => {
       if (err) {
       } else {

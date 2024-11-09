@@ -42,8 +42,8 @@ app.get("/health", (req, res) => {
 });
 
 // 라우터 처리
-// const route = require("./node_server/route/classA.js");
-// app.use("/", route);
+const route = require("./node_server/route/classA.js");
+app.use("/", route);
 
 // 라우터를 원활하게 사용하기 위한 추가 처리
 // 241102 Nginx로 서빙하고 있기 때문에 백엔드에서 직접 불러오지 않음

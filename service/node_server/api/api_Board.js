@@ -1,15 +1,15 @@
 /*
- * 작성자: 박준우 (왜 계속 파일명이 바뀌지)
- * 작성일: 240814
+ * 작성자: 박준우
+ * 작성일: 241109
  * 설명: 게시판 관리
  *      [get:select   post:insert   put:update   delete:delete]
  * 자식 연결: api_file
  *
  * 호출 예:
  *  GET ::: {category(필수), title, content, user_id}
- *  POST ::: {category(필수), pk_id(필수), title(필수), content(필수), user_id(필수)}
- *  PUT ::: {category(필수), pk_id(필수), title(필수), content(필수), user_id(필수)}
- *  DELETE ::: {category(필수), pk_id(필수), user_id(필수)}
+ *  POST ::: {category(필수), post_id(필수), title(필수), content(필수), user_id(필수)}
+ *  PUT ::: {category(필수), post_id(필수), title(필수), content(필수), user_id(필수)}
+ *  DELETE ::: {category(필수), post_id(필수), user_id(필수)}
  */
 const router = require("express").Router();
 const pgSQL = require("../../postgres_db/index");
