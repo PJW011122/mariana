@@ -75,6 +75,8 @@ export async function initializeClusterMap(
       feature.setProperties({
         content: row.content,
         address: row.co_address,
+        coord_x: row.coord_x, // Store original coord_x
+        coord_y: row.coord_y, // Store original coord_y
         co_status: row.co_status, // co_status 속성 추가
       });
       return feature;
@@ -138,15 +140,20 @@ export async function initializeClusterMap(
         if (features.length === 1) {
           const clickedFeature = features[0];
           const postId = clickedFeature.getId();
-          
+    
+          // Retrieve the original coordinates from the feature's properties
+          const coordX = clickedFeature.get('coord_x');
+          const coordY = clickedFeature.get('coord_y');
+    
           // Ensure onMarkerClick is a function before calling it
           if (typeof onMarkerClick === "function") {
-            onMarkerClick(postId); // 콜백 함수 호출
+            // Pass the coordinates to your callback function
+            onMarkerClick(postId, coordX, coordY);
           } else {
             console.error("onMarkerClick is not a function");
           }
         } else {
-          // 클러스터일 경우 확대하기
+          // Handle cluster expansion
           const extent = boundingExtent(
             features.map((f) => f.getGeometry().getCoordinates())
           );

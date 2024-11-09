@@ -7,7 +7,9 @@ import { colors } from "../../styles/colors";
 import { encode, decode } from "../../asset/util/encodeName.js";
 import axios from "axios";
 
-const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
+const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
+  console.log(coordX, coordY);
+
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
   const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
   const [beforeImageExtension, setBeforeImageExtension] = useState(""); // Before 이미지 확장자
@@ -202,7 +204,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
           <S.Header>
             <S.TextWrapper>
               <S.Title>제보 올리기</S.Title>
-              <S.Description>{cood_x}, {cood_y}</S.Description>
+              <S.Description>{coordX}, {coordY}</S.Description>
             </S.TextWrapper>
           </S.Header>
           <S.ImagesContainer>

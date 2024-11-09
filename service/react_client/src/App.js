@@ -20,6 +20,8 @@ function App() {
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [plusButtonType, setPlusButtonType] = useState("");
   const [selectedPostId, setSelectedPostId] = useState(null);
+  const [selectedCoordX, setSelectedCoordX] = useState(null);
+  const [selectedCoordY, setSelectedCoordY] = useState(null);
 
   // Functions to open each modal
   const isOpenModalFunc = () => setIsOpenMarkerModal(true);
@@ -41,8 +43,11 @@ function App() {
   };
 
   // Handle marker click to open ApplyModal
-  const handleMarkerClick = (postId) => {
+  const handleMarkerClick = (postId, coordX, coordY) => {
+    console.log('Clicked Marker Coordinates:', coordX, coordY);
     setSelectedPostId(postId);
+    setSelectedCoordX(coordX);
+    setSelectedCoordY(coordY);
     setIsOpenMarkerModal(true);
   };
 
@@ -65,6 +70,8 @@ function App() {
           isOpenModal={isOpenMarkerModal}
           setIsOpenModal={setIsOpenMarkerModal}
           postId={selectedPostId}
+          coordX={selectedCoordX} // Pass coordX
+          coordY={selectedCoordY} // Pass coordY
         />
         <SignupModal
           isOpenModal={isOpenSignupModal}

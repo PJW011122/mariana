@@ -3,12 +3,21 @@ import { logCoordinatesOnReturn } from "./feat/logPositionOnReturn";
 import { initializeClusterMap } from "./feat/clusterMap";
 import styled from "@emotion/styled";
 import "ol/ol.css";
+import { transform } from "ol/proj";
 
 const MapContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
   flex-direction: column;
+`;
+
+const Title = styled.div`
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: white;
 `;
 
 const Controls = styled.div`
@@ -47,7 +56,7 @@ function MapRenderer({ onMarkerClick }) {
   useEffect(() => {
     async function setupMap() {
       try {
-        mapRef.current = await initializeClusterMap("v_map");
+        mapRef.current = await initializeClusterMap("v_map", null, null, onMarkerClick);
         if (mapRef.current) {
           mapRef.current.getView().on("change:center", () => {
             const center = mapRef.current.getView().getCenter();
@@ -87,10 +96,6 @@ function MapRenderer({ onMarkerClick }) {
       }
     };
 
-    initializeMap();
-
-    // Set up a keydown event listener to log coordinates on every Enter press
-    const handleKeydown = logCoordinatesOnReturn(mapRef);
     window.addEventListener("keydown", handleKeydown);
 
     return () => {
@@ -99,15 +104,14 @@ function MapRenderer({ onMarkerClick }) {
         mapRef.current.setTarget(null);
       }
     };
-  }, []);
+  }, [onMarkerClick]);
 
   return (
     <MapContainer>
-      <S.Title>
+      <Title>
         <img src={"images/logo.png"} width={160} height={90} alt="Logo" />
-      </S.Title>
+      </Title>
       <Controls>
-        <label>Cluster Distance: </label>
         <input
           id="distance"
           type="hidden"
@@ -115,7 +119,6 @@ function MapRenderer({ onMarkerClick }) {
           min="10"
           max="200"
         />
-        <label> Min Distance: </label>
         <input
           id="min-distance"
           type="hidden"
