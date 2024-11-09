@@ -34,7 +34,7 @@ export const fetchAddress = async (
 
     const cood = response.data.response?.input;
     const address = response.data.response?.result?.[0]?.text;
-    if (address) {
+    if (address && cood) {
       console.log("\tAddress:", address);
       addressFound.current = true;
       const responseData = {
