@@ -196,12 +196,14 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
     return (
       <S.Wrapper onClick={closeModal}>
         <S.Container onClick={(e) => e.stopPropagation()}>
+          <S.IconContainer>
+            <IoClose size={30} onClick={closeModal} />
+          </S.IconContainer>
           <S.Header>
             <S.TextWrapper>
               <S.Title>제보 올리기</S.Title>
               <S.Description>{street_address}</S.Description>
             </S.TextWrapper>
-            <IoClose size={30} onClick={closeModal} />
           </S.Header>
           <S.ImagesContainer>
             <S.Dropzone {...getRootPropsBefore()} style={{ cursor: "pointer" }}>
@@ -264,7 +266,7 @@ const S = {
     border-bottom: 0.5px solid black;
   `,
   TextWrapper: styled.div`
-    padding: 24px 16px 16px 24px;
+    padding: 24px 0 16px 0;
     display: flex;
     flex-direction: column;
     justify-content: flex-start;
@@ -312,7 +314,7 @@ const S = {
   `,
   ButtonContainer: styled.div`
     display: flex;
-    padding-top: 50px;
+    padding-top: 40px;
     justify-content: flex-end;
     width: 100%;
     height: 100%;
@@ -324,8 +326,14 @@ const S = {
     justify-content: center;
     align-items: center;
     border-radius: 7px;
-    ${typographies.NeoButtonL};
+    ${typographies.PretendardRegular};
+    font-size: 20px;
     background-color: ${colors.Main_Yellow200};
+  `,
+  IconContainer: styled.div`
+    position: absolute;
+    top: 15px;
+    right: 15px;
   `,
 };
 
