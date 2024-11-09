@@ -3,34 +3,41 @@ import ApplyModal from "./components/modal/applicationModal";
 import { useState } from "react";
 import GlobalStyle from "./styles/GlobalStyle";
 import styled from "@emotion/styled";
+import { IoMdAddCircle } from "react-icons/io";
+import MapRenderer from "./MapRenderer";  // Make sure path is correct
+
 function App() {
   const [isOpenModal, setIsOpenModal] = useState(true);
   const isOpenModalFunc = () => {
     setIsOpenModal(true);
   };
   return (
-    <S.Container>
-      <S.Top>
-        <div>상단</div>
-      </S.Top>
-      <S.Body>
-        <S.BodyContent>메인(지도)asdsd</S.BodyContent>
-      </S.Body>
-      <S.BottomTab>
-        <div onClick={isOpenModalFunc}>추가하기</div>
-      </S.BottomTab>
-      <ApplyModal
-        description={"sdds"}
-        title={"sdd"}
-        isOpenModal={isOpenModal}
-        setIsOpenModal={setIsOpenModal}
-      />
-    </S.Container>
+    <>
+      <GlobalStyle />
+      <S.Container>
+        <S.Top>
+          <div>상단</div>
+        </S.Top>
+        <S.Body>
+          <S.BodyContent>
+              <MapRenderer />
+        </S.BodyContent>
+        </S.Body>
+        <S.BottomTab>
+          <S.PlusIconContainer onClick={isOpenModalFunc}>
+            <IoMdAddCircle size={130} />
+          </S.PlusIconContainer>
+        </S.BottomTab>
+        <ApplyModal
+          description={"sdds"}
+          title={"sdd"}
+          isOpenModal={isOpenModal}
+          setIsOpenModal={setIsOpenModal}
+        />
+      </S.Container>
+    </>
   );
 }
-
-export default App;
-
 const S = {
   Container: styled.div`
     max-width: 420px;
@@ -48,6 +55,7 @@ const S = {
     justify-content: center;
     align-content: center;
     border-bottom: black 1px solid;
+    background: white;
   `,
   Body: styled.div`
     width: 100%;
@@ -55,6 +63,7 @@ const S = {
     display: flex;
     justify-content: center;
     align-content: center;
+    background: white;
   `,
   BodyContent: styled.div`
     width: 100%;
@@ -65,7 +74,7 @@ const S = {
   `,
   BottomTab: styled.div`
     width: 420px;
-    height: 50px;
+    height: 100px;
     position: sticky;
     background: white;
     bottom: 0;
@@ -76,4 +85,11 @@ const S = {
     align-items: center;
     border: black 1px solid;
   `,
+  PlusIconContainer: styled.div`
+    position: absolute;
+    bottom: -12%;
+    left: 35%;
+  `,
 };
+
+export default App;

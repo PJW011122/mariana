@@ -1,6 +1,7 @@
 {
   "name": "react_client",
   "version": "0.1.0",
+  "proxy": "https://api.vworld.kr",
   "private": true,
   "dependencies": {
     "@emotion/css": "^11.13.4",
@@ -9,6 +10,8 @@
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
+    "ol": "^10.2.1",
+    "axios": "^1.2.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.3.5",
