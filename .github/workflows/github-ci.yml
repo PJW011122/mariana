@@ -4,7 +4,7 @@ on:
   push:
     branches:
       - main # main 브랜치에 push될 때 트리거
-      - develop # main 브랜치에 push될 때 트리거
+      - develop # develop 브랜치에 push될 때 트리거
       - pjw # main 브랜치에 push될 때 트리거
 
 jobs:

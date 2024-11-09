@@ -1,36 +1,53 @@
 import styled from "@emotion/styled";
-import { css } from "@emotion/react";
 import { useCallback, useState } from "react";
-import Text from "../Text/Text";
 import { IoClose } from "react-icons/io5";
 import { typographies } from "../../styles/typhographies";
 import { useDropzone } from "react-dropzone";
 
-const ApplyModal = ({ title, description, isOpenModal, setIsOpenModal }) => {
+const ApplyModal = ({ isOpenModal, setIsOpenModal }) => {  // removed unused props
+  const [preview, setPreview] = useState(null);
+
+  const onDrop = useCallback((acceptedFiles) => {
+    const file = acceptedFiles[0];
+    if (file) {
+      const previewUrl = URL.createObjectURL(file);
+      setPreview(previewUrl);
+    }
+  }, []);
+
+  const { getRootProps, getInputProps } = useDropzone({
+    onDrop,
+    accept: {
+      'image/*': ['.jpeg', '.jpg', '.png']
+    },
+    maxFiles: 1
+  });
+
   const closeModal = () => {
     setIsOpenModal(false);
   };
 
-  if (isOpenModal)
-    return (
-      <S.Wrapper onClick={closeModal}>
-        <S.Container onClick={(e) => e.stopPropagation()}>
-          <S.Header>
-            <S.TextWrapper>
-              <S.Title>게시글 올리기</S.Title>
-            </S.TextWrapper>
-            <S.TextWrapper onClick={closeModal}>
-              <IoClose size={25} />
-            </S.TextWrapper>
-          </S.Header>
-          <div {...getRootProps()}>
-            <div>dsd</div>
-            <image src={preview} />
-            <input {...getInputProps()} multiple={false} name="imageUrl" />
-          </div>
-        </S.Container>
-      </S.Wrapper>
-    );
+  if (!isOpenModal) return null;  // early return if modal is closed
+
+  return (
+    <S.Wrapper onClick={closeModal}>
+      <S.Container onClick={(e) => e.stopPropagation()}>
+        <S.Header>
+          <S.TextWrapper>
+            <S.Title>게시글 올리기</S.Title>
+          </S.TextWrapper>
+          <S.TextWrapper onClick={closeModal}>
+            <IoClose size={25} />
+          </S.TextWrapper>
+        </S.Header>
+        <S.DropzoneContainer {...getRootProps()}>
+          <div>이미지를 드래그하거나 클릭하여 업로드하세요</div>
+          {preview && <S.PreviewImage src={preview} alt="Preview" />}
+          <input {...getInputProps()} multiple={false} name="imageUrl" />
+        </S.DropzoneContainer>
+      </S.Container>
+    </S.Wrapper>
+  );
 };
 
 const S = {
@@ -49,7 +66,6 @@ const S = {
     top: 45%;
     left: 50%;
     transform: translate(-50%, -50%);
-
     background-color: white;
     height: 600px;
     width: 350px;
@@ -67,24 +83,28 @@ const S = {
     align-items: center;
     gap: 10px;
   `,
-  Button: styled.div`
-    padding: 10px;
-    width: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  `,
   Title: styled.div`
     ${typographies.PretendardRegular}
     font-size: 25px;
     font-weight: 600;
   `,
-  ImageContainer: styled.div`
-    width: 40px;
-    height: 40px;
-    border: 1px black solid;
+  DropzoneContainer: styled.div`
+    padding: 20px;
+    border: 2px dashed #ccc;
+    border-radius: 4px;
+    margin: 20px;
+    text-align: center;
+    cursor: pointer;
+    
+    &:hover {
+      border-color: #999;
+    }
   `,
-  Image: styled.image``,
+  PreviewImage: styled.img`
+    max-width: 100%;
+    height: auto;
+    margin-top: 10px;
+  `,
 };
 
 export default ApplyModal;
