@@ -11,6 +11,7 @@
  *  PUT ::: {category(필수), post_id(필수), title(필수), content(필수), user_id(필수)}
  *  DELETE ::: {category(필수), post_id(필수), user_id(필수)}
  */
+
 const router = require("express").Router();
 const pgSQL = require("../../postgres_db/index");
 const { uuid } = require("../util/generateKey");

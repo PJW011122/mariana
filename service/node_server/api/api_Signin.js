@@ -1,8 +1,16 @@
 /*
- * 작성자:
- * 작성일:
- * 설명: id가 틀렸는지 비밀번호가 틀렸는지 판별 못함
- *       그냥 로그인 됐으면 true(state 200), 안됐으면 false(state 401) 반환
+ * 작성자: 박준우
+ * 작성일: 241109
+ * 설명: 로그인
+ *      [post:insert]
+ *
+ *      id가 틀렸는지 비밀번호가 틀렸는지 판별 못함
+ *      그냥 로그인 됐으면 true(state 200),
+ *           비밀번호 일치 안됐으면 false(state 401) 반환,
+ *           아이디 일치 안됐으면 false(state 402) 반환
+ *
+ * 호출 예:
+ *  POST ::: {user_id(필수), user_pw(필수)}
  */
 
 const router = require("express").Router();
@@ -22,7 +30,7 @@ router.route("/").post(async (req, res) => {
 
     // 아이디 일치 여부 확인
     if (userResult.rowCount == 0) {
-      return res.status(401).send(false);
+      return res.status(402).send(false);
     }
 
     // 비밀번호 일치 여부 확인

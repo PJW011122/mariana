@@ -12,10 +12,12 @@ const classB_File = require("./classB_File");
 const api_Board = require("../api/api_Board.js");
 const api_Signin = require("../api/api_Signin.js");
 const api_Signup = require("../api/api_Signup.js");
+const api_Level = require("../api/api_Level.js");
 
 router.use("/file", classB_File);
 router.use("/board", api_Board);
 router.use("/signin", api_Signin);
 router.use("/signup", api_Signup);
+router.use("/level", api_Level);
 
 module.exports = router;
