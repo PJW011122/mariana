@@ -1,11 +1,10 @@
 import { Global } from "@emotion/react";
 import reset from "./reset";
 
-const GlobalStyle = ({ children }) => {
+const GlobalStyle = () => {
   return (
     <>
       <Global styles={reset} />
-      {children}
     </>
   );
 };
