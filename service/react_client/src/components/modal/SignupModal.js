@@ -27,21 +27,14 @@ const SignupModal = ({ isOpenModal, setIsOpenModal }) => {
       return;
     }
     // 회원가입 로직 추가 (API 호출 등)
-    const response = await axios.post("/signup", {
+    await axios.post("https://mariana.paaran.com/signup", {
       user_id: username,
       user_pw: password,
     });
-
-    if (response.status === 200) {
-      toast.success("회원가입에 성공하셨어요!");
-      localStorage.setItem("isSignup", true);
-      window.location.reload();
-      setError("");
-      closeModal();
-    } else {
-      toast.error("중복된 아이디가 있습니다.");
-      setError("");
-    }
+    toast.success("회원가입에 성공하셨어요!");
+    localStorage.setItem("isSignup", true);
+    setError("");
+    closeModal(); // 모달 닫기
   };
 
   if (isOpenModal)
