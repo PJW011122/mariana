@@ -5,7 +5,6 @@ const path = require("path");
 const pgSQL = require("../../postgres_db/index");
 
 // 현재 파일이 있는 디렉토리 경로 (__dirname)
-const tempDir = path.join(__dirname, "..", "uploads", "temp");
 const officialDir = path.join(__dirname, "..", "uploads", "official");
 
 // 파일 존재 여부 확인 및 삭제 함수
@@ -20,12 +19,12 @@ async function deleteFile(filePath) {
   }
 }
 
-// geojson 파일 목록 조회
+// 해당 게시글에 묶여 있는 파일 목록 조회
 router.get("/", async (req, res) => {
   try {
     const selectResult = await pgSQL.query({
-      text: `SELECT * FROM cm_file_t WHERE post_file = $1`,
-      values: [req.query.post_file],
+      text: `SELECT * FROM cm_board_t WHERE post_id = $1`,
+      values: [req.query.post_id],
     });
     return res.status(200).send(selectResult);
   } catch (err) {
@@ -42,16 +41,9 @@ router.delete("/", async (req, res) => {
       .status(400)
       .json({ message: "파일 이름이 제공되지 않았습니다." });
   }
-  const tempFilePath = path.resolve(tempDir, fileName);
   const officialFilePath = path.resolve(officialDir, fileName);
 
   try {
-    fs.stat(tempFilePath, async (err, stats) => {
-      if (err) {
-      } else {
-        await deleteFile(tempFilePath);
-      }
-    });
     fs.stat(officialFilePath, async (err, stats) => {
       if (err) {
       } else {

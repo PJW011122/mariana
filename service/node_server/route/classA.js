@@ -13,11 +13,13 @@ const api_Board = require("../api/api_Board.js");
 const api_Signin = require("../api/api_Signin.js");
 const api_Signup = require("../api/api_Signup.js");
 const api_Level = require("../api/api_Level.js");
+const api_Like = require("../api/api_Like.js");
 
 router.use("/file", classB_File);
 router.use("/board", api_Board);
 router.use("/signin", api_Signin);
 router.use("/signup", api_Signup);
 router.use("/level", api_Level);
+router.use("/like", api_Like);
 
 module.exports = router;
