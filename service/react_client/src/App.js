@@ -4,7 +4,6 @@ import ApplyModal from "./components/modal/applicationModal";
 import GlobalStyle from "./styles/GlobalStyle";
 import styled from "@emotion/styled";
 import { IoMdAddCircle } from "react-icons/io";
-import { FaUser, FaPlus } from "react-icons/fa6";
 import MapRenderer from "./MapRenderer";
 import SignupModal from "./components/modal/SignupModal";
 import LoginModal from "./components/modal/LoginModal";
@@ -14,7 +13,6 @@ import { typographies } from "./styles/typhographies";
 import { colors } from "./styles/colors";
 import { FaUserCircle } from "react-icons/fa";
 import { FaPlus, FaUser } from "react-icons/fa6";
-import MyPageModal from "./components/modal/MyPageModal";
 import axios from "axios";
 
 function App() {

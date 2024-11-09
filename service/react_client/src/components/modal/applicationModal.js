@@ -7,7 +7,13 @@ import { colors } from "../../styles/colors";
 import { encode, decode } from "../../asset/util/encodeName.js";
 import axios from "axios";
 
-const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
+const ApplyModal = ({
+  isOpenModal,
+  setIsOpenModal,
+  postId,
+  coordX,
+  coordY,
+}) => {
   console.log(coordX, coordY);
 
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
@@ -39,7 +45,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
 
   const handleCheckClick = async () => {
     const data = {
-      post_id: post.post_id, // 게시물 내용
+      post_id: postId, // 게시물 내용
       res_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
       res_file_path: afterImagePath, // 요청자의 파일 경로
       res_file_extension: afterImageExtension, // 요청자의 파일 확장자
@@ -200,7 +206,9 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
           <S.Header>
             <S.TextWrapper>
               <S.Title>제보 올리기</S.Title>
-              <S.Description>{coordX}, {coordY}</S.Description>
+              <S.Description>
+                {coordX}, {coordY}
+              </S.Description>
             </S.TextWrapper>
           </S.Header>
           <S.ImagesContainer>
@@ -225,7 +233,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
             placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"}
             onChange={(e) => setContent(e.target.value)}
           />
-          {post.post_id ? (
+          {postId ? (
             <S.ButtonContainer>
               <S.CheckButton onClick={handleCheckClick}>
                 <div>인증</div>
