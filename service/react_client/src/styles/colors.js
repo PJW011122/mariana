@@ -31,4 +31,10 @@ export const colors = {
 
   LightBlue: "#4EB1CB",
   SubBlue: "#005E9E",
+
+  Main_Red700: "#ff7a50",
+  Main_Red500: "#ff9e80",
+  Main_Red300: "#ffc4a8",
+  Main_Red100: "#ffe0cc",
+  Main_Yellow200: "#ffecb3",
 };

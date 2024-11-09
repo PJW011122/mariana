@@ -1,4 +1,5 @@
 import { css } from "@emotion/react";
+import { typographies } from "./typhographies";
 
 const reset = css`
   * {
@@ -32,6 +33,8 @@ const reset = css`
     background-color: #888888;
     overscroll-behavior: none;
     position: fixed;
+    ${typographies.PretendardRegular};
+    font-size: 16px;
   }
   ::-webkit-scrollbar {
     display: none;
