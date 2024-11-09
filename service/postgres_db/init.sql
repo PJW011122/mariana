@@ -25,7 +25,6 @@ CREATE TABLE cm_board_t (
     CONSTRAINT cm_board_t_pk PRIMARY KEY (post_id),
     CONSTRAINT unique_post_file UNIQUE (post_file)
 );
-COMMENT ON COLUMN public.cm_board_t.category IS 'categorizing post';
 
 -- cm_comment_t 테이블
 CREATE TABLE cm_comment_t (
