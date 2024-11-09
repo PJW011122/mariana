@@ -13,6 +13,7 @@ import { colors } from "./styles/colors"; // Make sure path is correct
 import { FaUserCircle } from "react-icons/fa";
 import { FaPlus, FaUser } from "react-icons/fa6";
 import MyPageModal from "./components/modal/MyPageModal";
+import axios from "axios";
 
 function App() {
   const [isOpenMarkerModal, setIsOpenMarkerModal] = useState(false);
@@ -20,6 +21,7 @@ function App() {
   const [isOpenLoginModal, setIsOpenLoginModal] = useState(false);
   const [isOpenMyPageModal, setIsOpenMyPageModal] = useState(false);
   const [plusButtonType, setPlusButtonType] = useState("");
+  const [boadrData, setBoadrData] = useState({});
 
   const isOpenModalFunc = () => {
     setIsOpenMarkerModal(true);

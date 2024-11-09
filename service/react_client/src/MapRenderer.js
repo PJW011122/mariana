@@ -96,6 +96,23 @@ function MapRenderer() {
       }
     };
   }, []);
+  const handleCrossHeader = () => {
+    if (
+      coordinatesRef.current.longitude !== null &&
+      coordinatesRef.current.latitude !== null
+    ) {
+      console.log(
+        `Longitude: ${coordinatesRef.current.longitude}, Latitude: ${coordinatesRef.current.latitude}`
+      );
+      const responseData = {
+        cood_x: coordinatesRef.current.longitude,
+        cood_y: coordinatesRef.current.latitude,
+      };
+
+      localStorage.setItem("address", JSON.stringify(responseData));
+      addressFound.current = true;
+    }
+  };
 
   return (
     <MapContainer>
@@ -119,7 +136,7 @@ function MapRenderer() {
         />
       </Controls>
       <MapWrapper id="v_map">
-        <Crosshair vertical />
+        <Crosshair vertical onClick={handleCrossHeader} />
         <Crosshair />
       </MapWrapper>
     </MapContainer>

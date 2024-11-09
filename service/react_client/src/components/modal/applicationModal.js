@@ -35,27 +35,24 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
     setAfterImage(null); // 모달 닫을 때 After 이미지 초기화
   };
 
+  const handleCheckClick = async () => {
+    const data = {
+      post_id: post.post_id, // 게시물 내용
+      res_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
+      res_file_path: afterImagePath, // 요청자의 파일 경로
+      res_file_extension: afterImageExtension, // 요청자의 파일 확장자
+      co_status: 1, // 상태 값
+    };
+    // PUT 요청 함수
+    try {
+      const response = await axios.put("/board", data);
+      window.location.reload();
+    } catch (error) {
+      console.error("manageBoard PUT Error:", error);
+      throw error;
+    }
+  };
   const handleSaveClick = async () => {
-    // let data = {};
-
-    // if (post.post_id) {
-    //   // 기존 게시글이 있는 상태 (onClick)
-    //   data = {
-    //     post_id: post.post_id, // 게시물 내용
-    //     res_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
-    //     res_file_path: afterImagePath, // 요청자의 파일 경로
-    //     res_file_extension: afterImageExtension, // 요청자의 파일 확장자
-    //     co_status: 1, // 상태 값
-    //   };
-    //   // PUT 요청 함수
-    //   try {
-    //     const response = await axios.put("/board", data);
-    //     return response.data;
-    //   } catch (error) {
-    //     console.error("manageBoard PUT Error:", error);
-    //     throw error;
-    //   }
-    // } else {
     const data = {
       content: content, // 게시물 내용
       req_user_id: localStorage.getItem("userId"), // 요청자의 사용자 ID
@@ -69,13 +66,12 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
 
     // POST 요청 함수
     try {
-      const response = await axios.post("/board", data);
-      return response.data;
+      await axios.post("/board", data);
+      window.location.reload();
     } catch (error) {
       console.error("manageBoard POST Error:", error);
       throw error;
     }
-    // }
   };
 
   // Before 사진 드래그 로직
@@ -227,11 +223,19 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
             placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"}
             onChange={(e) => setContent(e.target.value)}
           />
-          <S.ButtonContainer>
-            <S.Button onClick={handleSaveClick}>
-              <div>저장</div>
-            </S.Button>
-          </S.ButtonContainer>
+          {post.post_id ? (
+            <S.ButtonContainer>
+              <S.CheckButton onClick={handleCheckClick}>
+                <div>인증</div>
+              </S.CheckButton>
+            </S.ButtonContainer>
+          ) : (
+            <S.ButtonContainer>
+              <S.ReportButton onClick={handleSaveClick}>
+                <div>저장</div>
+              </S.ReportButton>
+            </S.ButtonContainer>
+          )}
         </S.Container>
       </S.Wrapper>
     );
@@ -319,7 +323,7 @@ const S = {
     width: 100%;
     height: 100%;
   `,
-  Button: styled.div`
+  ReportButton: styled.div`
     width: 100px;
     height: 50px;
     display: flex;
@@ -329,6 +333,17 @@ const S = {
     ${typographies.PretendardRegular};
     font-size: 20px;
     background-color: ${colors.Main_Yellow200};
+  `,
+  CheckButton: styled.div`
+    width: 100px;
+    height: 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 7px;
+    ${typographies.PretendardRegular};
+    font-size: 20px;
+    background-color: ${colors.Main_Red500};
   `,
   IconContainer: styled.div`
     position: absolute;
