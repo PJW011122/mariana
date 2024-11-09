@@ -14,7 +14,6 @@ export const fetchAddress = async (
   attempt,
   addressFound
 ) => {
-  console.log("addressLookcup", "check0");
   if (addressFound.current) return false;
 
   try {
@@ -24,7 +23,6 @@ export const fetchAddress = async (
       cood_y: latitude,
       street_address: "Sample Address", // 실제 API 호출 시 주소를 받아오는 로직으로 대체 필요
     };
-    console.log("addressLookcup", "check1");
     // 주소를 찾았다고 가정하고 localStorage에 저장
     localStorage.setItem("address", JSON.stringify(responseData));
     addressFound.current = true; // 주소가 발견되었음을 설정
@@ -41,7 +39,6 @@ export const retryNearbyPoints = async (
   attempt,
   addressFound
 ) => {
-  console.log("retryNearbyPoints", "check0");
   if (addressFound.current) return;
 
   const currentDistance = retryDistance * attempt;
