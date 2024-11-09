@@ -11,13 +11,17 @@ COMMENT ON TABLE public.cm_user_t IS '공통_user_tb';
 
 -- cm_board_t 테이블
 CREATE TABLE cm_board_t (
-    category int4 NOT NULL, -- categorizing post
     post_id varchar NOT NULL,
     title varchar NOT NULL,
-    "content" varchar NULL,
-    user_id varchar NULL,
+    content varchar NULL,
+    req_user_id varchar NULL,
+    res_user_id varchar NULL,
     created_at timestamp NOT NULL,
     updated_at timestamp NOT NULL,
+    coord_x float8 NULL,
+    coord_y float8 NULL,
+    co_address varchar NULL,
+    co_status int4 NULL,
     post_file varchar NULL,
     category_detail varchar NULL,
     CONSTRAINT cm_board_t_pk PRIMARY KEY (post_id),
@@ -53,14 +57,6 @@ CREATE TABLE cm_file_t (
     CONSTRAINT cm_file_t_cm_board_t_fk FOREIGN KEY (post_file) REFERENCES cm_board_t(post_file) ON DELETE CASCADE
 );
 COMMENT ON COLUMN public.cm_file_t.file_name IS 'file_originalname';
-
--- cm_usertoken_t 테이블
-CREATE TABLE cm_usertoken_t (
-    user_id varchar NOT NULL,
-    user_token varchar NOT NULL,
-    CONSTRAINT cm_token_t_pk PRIMARY KEY (user_id),
-    CONSTRAINT cm_usertoken_t_cm_user_t_fk FOREIGN KEY (user_id) REFERENCES cm_user_t(user_id) ON DELETE CASCADE
-);
 
 -- 2. 트리거 함수 생성
 
