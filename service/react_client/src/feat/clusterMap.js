@@ -9,19 +9,13 @@ import View from "ol/View.js";
 import { Cluster, Vector as VectorSource, OSM } from "ol/source.js";
 import { Tile as TileLayer, Vector as VectorLayer } from "ol/layer.js";
 import { Circle as CircleStyle, Fill, Stroke, Style, Text } from "ol/style.js";
+import { boundingExtent } from "ol/extent.js";
 
-/**
- * 지도를 초기화하고 클러스터링된 피처를 표시합니다.
- *
- * @param {string} targetId - 지도가 렌더링될 HTML 요소의 ID.
- * @param {HTMLElement} distanceInput - 클러스터링 거리 값을 포함하는 입력 요소.
- * @param {HTMLElement} minDistanceInput - 최소 클러스터링 거리 값을 포함하는 입력 요소.
- * @returns {Map} OpenLayers Map 객체.
- */
 export async function initializeClusterMap(
   targetId,
   distanceInput,
-  minDistanceInput
+  minDistanceInput,
+  onMarkerClick // 콜백 함수 추가
 ) {
   const divMap = document.getElementById(targetId);
   if (!divMap) {
@@ -131,6 +125,34 @@ export async function initializeClusterMap(
         center: fromLonLat([126.98214956614996, 37.52421189733802]), // 초기 중심 좌표 (경도, 위도)
         zoom: 12, // 초기 줌 레벨
       }),
+    });
+
+    // 마커 클릭 이벤트 처리
+    map.on("singleclick", function (evt) {
+      const feature = map.forEachFeatureAtPixel(evt.pixel, function (feature) {
+        return feature;
+      });
+    
+      if (feature) {
+        const features = feature.get("features");
+        if (features.length === 1) {
+          const clickedFeature = features[0];
+          const postId = clickedFeature.getId();
+          
+          // Ensure onMarkerClick is a function before calling it
+          if (typeof onMarkerClick === "function") {
+            onMarkerClick(postId); // 콜백 함수 호출
+          } else {
+            console.error("onMarkerClick is not a function");
+          }
+        } else {
+          // 클러스터일 경우 확대하기
+          const extent = boundingExtent(
+            features.map((f) => f.getGeometry().getCoordinates())
+          );
+          map.getView().fit(extent, { duration: 500 });
+        }
+      }
     });
 
     return map;

@@ -1,20 +1,18 @@
 import React, { useEffect, useRef } from "react";
+import { logCoordinatesOnReturn } from "./feat/logPositionOnReturn";
 import { initializeClusterMap } from "./feat/clusterMap";
 import styled from "@emotion/styled";
-import { transform } from "ol/proj";
 import "ol/ol.css";
-import { typographies } from "./styles/typhographies";
 
 const MapContainer = styled.div`
   width: 100%;
   height: 100%;
   display: flex;
-  position: relative;
   flex-direction: column;
-  border-radius: 24px;
 `;
 
 const Controls = styled.div`
+  padding: 10px;
   background: white;
   z-index: 1;
 `;
@@ -39,7 +37,9 @@ const Crosshair = styled.div`
   z-index: 1;
 `;
 
-function MapRenderer() {
+function MapRenderer({ onMarkerClick }) {
+  const distanceInput = useRef(null);
+  const minDistanceInput = useRef(null);
   const mapRef = useRef(null);
   const coordinatesRef = useRef({ longitude: null, latitude: null });
   const addressFound = useRef(false);
@@ -87,6 +87,10 @@ function MapRenderer() {
       }
     };
 
+    initializeMap();
+
+    // Set up a keydown event listener to log coordinates on every Enter press
+    const handleKeydown = logCoordinatesOnReturn(mapRef);
     window.addEventListener("keydown", handleKeydown);
 
     return () => {
@@ -103,6 +107,7 @@ function MapRenderer() {
         <img src={"images/logo.png"} width={160} height={90} alt="Logo" />
       </S.Title>
       <Controls>
+        <label>Cluster Distance: </label>
         <input
           id="distance"
           type="hidden"
@@ -110,6 +115,7 @@ function MapRenderer() {
           min="10"
           max="200"
         />
+        <label> Min Distance: </label>
         <input
           id="min-distance"
           type="hidden"
@@ -127,39 +133,3 @@ function MapRenderer() {
 }
 
 export default MapRenderer;
-
-const S = {
-  Title: styled.div`
-    padding-bottom: 2px;
-    padding-top: 2px;
-    padding-left: 10px;
-    padding-right: 10px;
-    background: white;
-    border-radius: 24px;
-    position: fixed;
-    top: 25px;
-    left: 30%;
-    z-index: 1001;
-    ${typographies.PretendardRegular}
-    font-size: 25px;
-    font-weight: 600;
-  `,
-  BottomTab: styled.div`
-    width: 420px;
-    height: 100px;
-    position: sticky;
-    background: white;
-    bottom: 0;
-    left: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    border: black 1px solid;
-  `,
-  PlusIconContainer: styled.div`
-    position: absolute;
-    bottom: 10%;
-    left: 35%;
-  `,
-};

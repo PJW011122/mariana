@@ -202,7 +202,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, post }) => {
           <S.Header>
             <S.TextWrapper>
               <S.Title>제보 올리기</S.Title>
-              <S.Description>{street_address}</S.Description>
+              <S.Description>{cood_x}, {cood_y}</S.Description>
             </S.TextWrapper>
           </S.Header>
           <S.ImagesContainer>
