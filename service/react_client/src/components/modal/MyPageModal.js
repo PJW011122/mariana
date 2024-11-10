@@ -170,7 +170,7 @@ const S = {
     left: 50%;
     transform: translate(-50%, -50%);
     background-color: white;
-    height: 800px; /* 높이 조정 */
+    height: 600px;
     width: 360px;
     border-radius: 12px;
     padding: 20px; /* Padding 추가 */
