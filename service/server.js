@@ -17,8 +17,8 @@ app.use(cors(corsOptions));
 // 쿠키 파서 미들웨어
 app.use(cookieParser());
 // React.js와 연결 (react에서 build한 index.html file 받아옴)
-const path = require("path");
-app.use(express.static(path.resolve(__dirname, "./react_client/build")));
+// const path = require("path");
+// app.use(express.static(path.resolve(__dirname, "./react_client/build")));
 // 해당 처리 없으면 index.html 못읽음
 // 241102 Nginx로 서빙하기 때문에 백엔드에서 직접 불러오지 않아도 됨
 
@@ -47,12 +47,12 @@ app.use("/", route);
 
 // 라우터를 원활하게 사용하기 위한 추가 처리
 // 241102 Nginx로 서빙하고 있기 때문에 백엔드에서 직접 불러오지 않음
-app.get("/", function (req, res) {
-  res.sendFile(path.join(__dirname, "./react_client/build/index.html"));
-});
-app.get("*", function (req, res) {
-  res.sendFile(path.join(__dirname, "./react_client/build/index.html"));
-});
+// app.get("/", function (req, res) {
+//   res.sendFile(path.join(__dirname, "./react_client/build/index.html"));
+// });
+// app.get("*", function (req, res) {
+//   res.sendFile(path.join(__dirname, "./react_client/build/index.html"));
+// });
 
 const PORT = process.env.NODE_DOCKER_PORT || 5000;
 app.listen(PORT, function () {
