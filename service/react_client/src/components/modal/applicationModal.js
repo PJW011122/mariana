@@ -1,12 +1,83 @@
+import React from "react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { IoClose } from "react-icons/io5";
+import { IoClose, IoHeartOutline, IoHeart } from "react-icons/io5";
 import { typographies } from "../../styles/typhographies";
 import { useDropzone } from "react-dropzone";
 import { colors } from "../../styles/colors";
 import { encode, decode } from "../../asset/util/encodeName.js";
+import { getLikes, postLike, deleteLike } from "../../feat/likeService";
 import axios from "axios";
 
+console.log("getLikes:", getLikes);
+console.log("postLike:", postLike);
+console.log("deleteLike:", deleteLike);
+
+const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
+  console.log(postId, coordX, coordY);
+
+  const [likeCount, setLikeCount] = useState(0);
+  const [isLiked, setIsLiked] = useState(false);
+
+  const userId = localStorage.getItem("userId"); // Assume user ID is stored in localStorage
+
+  useEffect(() => {
+    if (isOpenModal && postId) {
+      fetchLikes();
+    }
+  }, [postId, isOpenModal]);
+
+  const fetchLikes = () => {
+    getLikes(postId)
+      .then((likes) => {
+        // count the rows where the post_id is the same as the postId
+        let likesCount = 0;
+        let userLiked = false;
+        for (let i = 0; i < likes.rowCount; i++) {
+          if (likes.rows[i].post_id === postId) {
+            likesCount++;
+            if (likes.rows[i].user_id === userId) userLiked = true;
+          }
+        }
+        setLikeCount(likesCount);
+  
+        if (userLiked) {
+          setIsLiked(true);
+        } else {
+          setIsLiked(false);
+        }
+      })
+      .catch((error) => {
+        console.error("Failed to fetch likes:", error);
+      });
+  };
+
+  const handleLikeToggle = () => {
+    if (isLiked) {
+      deleteLike(userId, postId)
+        .then(() => {
+          fetchLikes();
+        })
+        .catch((error) => {
+          console.error("Failed to delete like:", error);
+        });
+        
+        // unfill heart
+        setIsLiked(false);
+    } else {
+      postLike(userId, postId)
+        .then(() => {
+          fetchLikes();
+        })
+        .catch((error) => {
+          console.error("Failed to post like:", error);
+        });
+
+        // fill heart
+        setIsLiked(true);
+    }
+
+  };
 const ApplyModal = ({
   isOpenModal,
   setIsOpenModal,
@@ -275,6 +346,15 @@ const ApplyModal = ({
               )}
             </S.Dropzone>
           </S.ImagesContainer>
+
+          {/* Like Icon and Count */}
+          <S.LikeContainer>
+            <S.LikeIcon onClick={handleLikeToggle}>
+              {isLiked ? <IoHeart size={24}/> : <IoHeartOutline size={24} />}
+            </S.LikeIcon>
+            <S.LikeCount>{likeCount}</S.LikeCount>
+          </S.LikeContainer>
+          
           <S.Textarea
             placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"}
             value={content}
@@ -370,12 +450,12 @@ const S = {
     border: 2px solid #cccccc;
     margin-top: 20px;
     width: 99%;
-    height: 120px;
+    height: 100px;
     background-color: #f9f9f9;
   `,
   ButtonContainer: styled.div`
     display: flex;
-    padding-top: 40px;
+    padding-top: 10px;
     justify-content: flex-end;
     width: 100%;
     height: 100%;
@@ -406,6 +486,27 @@ const S = {
     position: absolute;
     top: 15px;
     right: 15px;
+  `,
+  LikeContainer: styled.div`
+    display: absolute;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 10px;
+    margin-bottom: 5px;
+    margin-left: 280px;
+    width: 100%;
+    justify-content: flex-end;
+  `,
+  LikeIcon: styled.div`
+    font-size: 30px;
+    cursor: pointer;
+    color: ${colors.Main_Yellow200};
+  `,
+  LikeCount: styled.div`
+    font-size: 14px;
+    margin-top: 5px;
+    margin-left: 12px;
+    color: #333;
   `,
 };
 
