@@ -88,6 +88,7 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
         const response2 = await axios.get("/board", {});
 
         const userLevel = response1.data.user_level;
+        setPostCount(userLevel);
         setLevelPoint(userLevel);
         setLevelTitle(getRewardTitle(userLevel));
 
@@ -95,6 +96,7 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
         const userPosts = response2.data.rows?.filter(
           (post) => post.req_user_id === userId
         );
+        console.log(userPosts, "user posts");
         setPostCount(userPosts ? userPosts.length : 0); // userPosts가 null일 경우 0으로 설정
 
         displayPostCountsWithRank(response2, userId);
