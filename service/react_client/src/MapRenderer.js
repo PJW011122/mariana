@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import "ol/ol.css";
 import { transform } from "ol/proj";
 import {typographies} from "./styles/typhographies";
+import toast from "react-hot-toast";
 
 const MapContainer = styled.div`
   width: 100%;
@@ -136,6 +137,7 @@ function MapRenderer({ onMarkerClick }) {
 
       localStorage.setItem("address", JSON.stringify(responseData));
       addressFound.current = true;
+      toast.success("좌표 설정에 성공하셨습니다!")
     }
   };
 
@@ -162,7 +164,7 @@ function MapRenderer({ onMarkerClick }) {
       </Controls>
       <MapWrapper id="v_map">
         <Crosshair vertical onClick={handleCrossHeader} />
-        <Crosshair />
+        <Crosshair onClick={handleCrossHeader}/>
       </MapWrapper>
     </MapContainer>
   );
