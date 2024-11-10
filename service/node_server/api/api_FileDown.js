@@ -7,7 +7,6 @@ const mime = require("mime-types");
 const officialDir = path.join(__dirname, "..", "uploads", "official");
 
 router.route("/").get((req, res) => {
-  console.log("sfdasdfasdfasdfasdf");
   const { fileName } = req.query;
   const filePath = path.join(officialDir, fileName);
 

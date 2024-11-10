@@ -3,7 +3,7 @@ import { initializeClusterMap } from "./feat/clusterMap";
 import styled from "@emotion/styled";
 import "ol/ol.css";
 import { transform } from "ol/proj";
-import {typographies} from "./styles/typhographies";
+import { typographies } from "./styles/typhographies";
 import toast from "react-hot-toast";
 
 const MapContainer = styled.div`
@@ -18,8 +18,8 @@ const MapContainer = styled.div`
 const Title = styled.div`
   padding-bottom: 2px;
   padding-top: 2px;
-  padding-left: 10px;
-  padding-right: 10px;
+  padding-left: 5px;
+  padding-right: 5px;
   background: white;
   border-radius: 24px;
   position: absolute;
@@ -32,7 +32,6 @@ const Title = styled.div`
 `;
 
 const Controls = styled.div`
-  padding: 10px;
   background: white;
   z-index: 1;
 `;
@@ -137,14 +136,14 @@ function MapRenderer({ onMarkerClick }) {
 
       localStorage.setItem("address", JSON.stringify(responseData));
       addressFound.current = true;
-      toast.success("좌표 설정에 성공하셨습니다!")
+      toast.success("좌표 설정에 성공하셨습니다!");
     }
   };
 
   return (
     <MapContainer>
       <Title>
-        <img src={"images/logo.png"} width={160} height={90} alt="Logo" />
+        <img src={"images/logo.png"} width={150} height={80} alt="Logo" />
       </Title>
       <Controls>
         <input
@@ -153,6 +152,7 @@ function MapRenderer({ onMarkerClick }) {
           defaultValue="30"
           min="10"
           max="200"
+          visible="false"
         />
         <input
           id="min-distance"
@@ -160,11 +160,12 @@ function MapRenderer({ onMarkerClick }) {
           defaultValue="30"
           min="0"
           max="100"
+          visible="false"
         />
       </Controls>
       <MapWrapper id="v_map">
         <Crosshair vertical onClick={handleCrossHeader} />
-        <Crosshair onClick={handleCrossHeader}/>
+        <Crosshair onClick={handleCrossHeader} />
       </MapWrapper>
     </MapContainer>
   );
