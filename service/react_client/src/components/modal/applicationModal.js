@@ -20,15 +20,18 @@ const ApplyModal = ({
   const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
   const [beforeImageExtension, setBeforeImageExtension] = useState(""); // Before 이미지 확장자
   const [afterImage, setAfterImage] = useState(null); // After 이미지 상태
-  const [afterImagePath, setAfterImagePath] = useState(null); // Before 이미지 Path
+  const [afterImagePath, setAfterImagePath] = useState(null); // After 이미지 Path
   const [afterImageExtension, setAfterImageExtension] = useState(""); // After 이미지 확장자
   const [content, setContent] = useState(""); // 내용 상태
   const [postData, setPostData] = useState(null); // 내용 상태
+  const isVerifyMode =
+    postId && postData?.rows[0]?.req_file_path ? true : false;
 
   useEffect(() => {
     setContent("");
     setBeforeImage(null);
     setAfterImage(null);
+    setPostData(null);
     // postId가 존재할 때만 GET 요청 수행
 
     if (postId) {
@@ -82,9 +85,11 @@ const ApplyModal = ({
 
   const closeModal = () => {
     setIsOpenModal(false);
+    setContent("");
     setBeforeImage(null); // 모달 닫을 때 Before 이미지 초기화
     setBeforeImageExtension(""); // 모달 닫을 때 Before 이미지 확장자 초기화
     setAfterImage(null); // 모달 닫을 때 After 이미지 초기화
+    setPostData(null);
   };
 
   const handleCheckClick = async () => {
@@ -187,7 +192,7 @@ const ApplyModal = ({
   const {
     getRootProps: getRootPropsBefore,
     getInputProps: getInputPropsBefore,
-  } = useDropzone({ onDrop: onDropBefore });
+  } = useDropzone({ onDrop: onDropBefore, disabled: isVerifyMode });
 
   // After 사진 드래그 로직
   const onDropAfter = (acceptedFiles) => {
@@ -240,7 +245,7 @@ const ApplyModal = ({
   };
 
   const { getRootProps: getRootPropsAfter, getInputProps: getInputPropsAfter } =
-    useDropzone({ onDrop: onDropAfter });
+    useDropzone({ onDrop: onDropAfter, disabled: !isVerifyMode });
 
   if (isOpenModal)
     return (
@@ -258,7 +263,11 @@ const ApplyModal = ({
             </S.TextWrapper>
           </S.Header>
           <S.ImagesContainer>
-            <S.Dropzone {...getRootPropsBefore()} style={{ cursor: "pointer" }}>
+            <S.Dropzone
+              {...getRootPropsBefore()}
+              style={{ cursor: isVerifyMode ? "not-allowed" : "pointer" }}
+              disabled={isVerifyMode}
+            >
               <input {...getInputPropsBefore()} />
               {beforeImage ? (
                 <S.ImagePreview src={beforeImage} alt="Before" />
@@ -266,7 +275,11 @@ const ApplyModal = ({
                 <div>Before 사진을 드래그하거나 클릭하여 업로드하세요.</div>
               )}
             </S.Dropzone>
-            <S.Dropzone {...getRootPropsAfter()} style={{ cursor: "pointer" }}>
+            <S.Dropzone
+              {...getRootPropsAfter()}
+              style={{ cursor: !isVerifyMode ? "not-allowed" : "pointer" }}
+              disabled={!isVerifyMode}
+            >
               <input {...getInputPropsAfter()} />
               {afterImage ? (
                 <S.ImagePreview src={afterImage} alt="After" />
@@ -279,6 +292,7 @@ const ApplyModal = ({
             placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"}
             value={content}
             onChange={(e) => setContent(e.target.value)}
+            disabled={isVerifyMode}
           />
           {postData?.rows[0]?.req_file_path ? (
             <S.ButtonContainer>
