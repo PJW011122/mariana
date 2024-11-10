@@ -88,6 +88,7 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
         const response2 = await axios.get("/board", {});
 
         const userLevel = response1.data.user_level;
+        setPostCount(userLevel);
         setLevelPoint(userLevel);
         setLevelTitle(getRewardTitle(userLevel));
 
@@ -95,6 +96,7 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
         const userPosts = response2.data.rows?.filter(
           (post) => post.req_user_id === userId
         );
+        console.log(userPosts, "user posts");
         setPostCount(userPosts ? userPosts.length : 0); // userPosts가 null일 경우 0으로 설정
 
         displayPostCountsWithRank(response2, userId);
@@ -133,18 +135,11 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
 
             <S.RankTitleContainer>
               <div>
-                <S.RankSubTile1>총 </S.RankSubTile1>
+                <S.RankSubTile1>서울에서 총 </S.RankSubTile1>
                 <S.RankSubTile2>{postCount}</S.RankSubTile2>
-                <S.RankSubTile1>번으로</S.RankSubTile1>
+                <S.RankSubTile1>번 킥보드를 정리했어요</S.RankSubTile1>
               </div>
-              <div>
-                <S.RankSubTile1>서울에서 </S.RankSubTile1>
-                <S.RankSubTile2>{postCountLank}</S.RankSubTile2>
-                <S.RankSubTile1>번째로 많이 </S.RankSubTile1>
-                <div>
-                  <S.RankSubTile1>킥보드를 정리했어요</S.RankSubTile1>
-                </div>
-              </div>
+              <div></div>
             </S.RankTitleContainer>
           </S.Body>
         </S.Container>
