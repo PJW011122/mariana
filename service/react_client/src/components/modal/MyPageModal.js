@@ -80,13 +80,15 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
       setPostCountLank("???");
     }
   };
-
+ㄴ
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response1 = await axios.get('/user');
-        const response2 = await axios.get('/board');
+        const response1 = await axios.get('/level', {
+          userId:userId
+        });
+        const response2 = await axios.get('/board',{});
 
         const userLevel = response1.data.user_level;
         setLevelPoint(userLevel);
