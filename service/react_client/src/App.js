@@ -46,8 +46,10 @@ function App() {
   };
 
   const handleMyButtonType = () => {
-    if (plusButtonType === "signUp") return toast("로그인 이후 이용 가능합니다!");
-    if (plusButtonType === "logIn") return toast("로그인 이후 이용 가능합니다!");
+    if (plusButtonType === "signUp")
+      return toast("로그인 이후 이용 가능합니다!");
+    if (plusButtonType === "logIn")
+      return toast("로그인 이후 이용 가능합니다!");
     return setIsOpenMyPageModal(true);
   };
 
@@ -110,15 +112,6 @@ const S = {
     align-items: center;
     border: black 1px solid;
     border-radius: 40px;
-  `,
-  Top: styled.div`
-    width: 100%;
-    height: 80px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom: black 1px solid;
-    background: white;
   `,
   Body: styled.div`
     width: 100%;
