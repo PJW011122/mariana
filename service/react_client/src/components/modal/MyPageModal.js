@@ -88,7 +88,6 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
         const response2 = await axios.get("/board", {});
 
         const userLevel = response1.data.user_level;
-        setPostCount(userLevel);
         setLevelPoint(userLevel);
         setLevelTitle(getRewardTitle(userLevel));
 
