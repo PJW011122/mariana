@@ -8,7 +8,7 @@ import MapRenderer from "./MapRenderer";
 import SignupModal from "./components/modal/SignupModal";
 import LoginModal from "./components/modal/LoginModal";
 import MyPageModal from "./components/modal/MyPageModal";
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { typographies } from "./styles/typhographies";
 import { colors } from "./styles/colors";
 import { FaUserCircle } from "react-icons/fa";
@@ -45,6 +45,12 @@ function App() {
     return isOpenModalFunc;
   };
 
+  const handleMyButtonType = () => {
+    if (plusButtonType === "signUp") return toast("로그인 이후 이용 가능합니다!");
+    if (plusButtonType === "logIn") return toast("로그인 이후 이용 가능합니다!");
+    return setIsOpenMyPageModal(true);
+  };
+
   // Handle marker click to open ApplyModal
   const handleMarkerClick = (postId, coordX, coordY) => {
     console.log("Clicked Marker Coordinates:", coordX, coordY);
@@ -65,7 +71,7 @@ function App() {
           <S.PlusIconContainer onClick={handlePlusButtonType()}>
             <FaPlus size={47} />
           </S.PlusIconContainer>
-          <S.MyIconContainer onClick={() => setIsOpenMyPageModal(true)}>
+          <S.MyIconContainer onClick={handleMyButtonType}>
             <FaUser size={47} />
           </S.MyIconContainer>
         </S.BottomTab>
