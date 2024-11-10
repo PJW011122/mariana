@@ -13,7 +13,13 @@ console.log("getLikes:", getLikes);
 console.log("postLike:", postLike);
 console.log("deleteLike:", deleteLike);
 
-const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
+const ApplyModal = ({
+  isOpenModal,
+  setIsOpenModal,
+  postId,
+  coordX,
+  coordY,
+}) => {
   console.log(postId, coordX, coordY);
 
   const [likeCount, setLikeCount] = useState(0);
@@ -40,7 +46,7 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
           }
         }
         setLikeCount(likesCount);
-  
+
         if (userLiked) {
           setIsLiked(true);
         } else {
@@ -61,9 +67,9 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
         .catch((error) => {
           console.error("Failed to delete like:", error);
         });
-        
-        // unfill heart
-        setIsLiked(false);
+
+      // unfill heart
+      setIsLiked(false);
     } else {
       postLike(userId, postId)
         .then(() => {
@@ -73,19 +79,18 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
           console.error("Failed to post like:", error);
         });
 
-        // fill heart
-        setIsLiked(true);
+      // fill heart
+      setIsLiked(true);
     }
-
   };
-// const ApplyModal = ({
-//   isOpenModal,
-//   setIsOpenModal,
-//   postId,
-//   coordX,
-//   coordY,
-// }) => {
-//   console.log("application 호출", coordX, coordY, postId);
+  // const ApplyModal = ({
+  //   isOpenModal,
+  //   setIsOpenModal,
+  //   postId,
+  //   coordX,
+  //   coordY,
+  // }) => {
+  //   console.log("application 호출", coordX, coordY, postId);
 
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
   const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
@@ -363,11 +368,11 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
           {/* Like Icon and Count */}
           <S.LikeContainer>
             <S.LikeIcon onClick={handleLikeToggle}>
-              {isLiked ? <IoHeart size={24}/> : <IoHeartOutline size={24} />}
+              {isLiked ? <IoHeart size={24} /> : <IoHeartOutline size={24} />}
             </S.LikeIcon>
             <S.LikeCount>{likeCount}</S.LikeCount>
           </S.LikeContainer>
-          
+
           <S.Textarea
             placeholder={"전동 킥보드는 어떻게 놓여있었나요?!"}
             value={content}
