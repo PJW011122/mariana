@@ -135,18 +135,11 @@ const MyPageModal = ({ isOpenModal, setIsOpenModal }) => {
 
             <S.RankTitleContainer>
               <div>
-                <S.RankSubTile1>총 </S.RankSubTile1>
+                <S.RankSubTile1>서울에서 총 </S.RankSubTile1>
                 <S.RankSubTile2>{postCount}</S.RankSubTile2>
-                <S.RankSubTile1>번으로</S.RankSubTile1>
+                <S.RankSubTile1>번 킥보드를 정리했어요</S.RankSubTile1>
               </div>
-              <div>
-                <S.RankSubTile1>서울에서 </S.RankSubTile1>
-                <S.RankSubTile2>{postCountLank}</S.RankSubTile2>
-                <S.RankSubTile1>번째로 많이 </S.RankSubTile1>
-                <div>
-                  <S.RankSubTile1>킥보드를 정리했어요</S.RankSubTile1>
-                </div>
-              </div>
+              <div></div>
             </S.RankTitleContainer>
           </S.Body>
         </S.Container>
