@@ -1,0 +1,3 @@
+# git 공유 금지 파일
+/node_modules
+/node_server/uploads
