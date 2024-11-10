@@ -22,7 +22,7 @@ const Title = styled.div`
   padding-right: 10px;
   background: white;
   border-radius: 24px;
-  position: fixed;
+  position: absolute;
   top: 25px;
   left: 30%;
   z-index: 1001;
