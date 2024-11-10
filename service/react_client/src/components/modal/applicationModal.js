@@ -78,14 +78,14 @@ const ApplyModal = ({ isOpenModal, setIsOpenModal, postId, coordX, coordY}) => {
     }
 
   };
-const ApplyModal = ({
-  isOpenModal,
-  setIsOpenModal,
-  postId,
-  coordX,
-  coordY,
-}) => {
-  console.log("application 호출", coordX, coordY, postId);
+// const ApplyModal = ({
+//   isOpenModal,
+//   setIsOpenModal,
+//   postId,
+//   coordX,
+//   coordY,
+// }) => {
+//   console.log("application 호출", coordX, coordY, postId);
 
   const [beforeImage, setBeforeImage] = useState(null); // Before 이미지 URL
   const [beforeImagePath, setBeforeImagePath] = useState(null); // Before 이미지 Path
