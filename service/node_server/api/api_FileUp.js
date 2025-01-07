@@ -2,8 +2,7 @@ const router = require("express").Router();
 const multer = require("multer");
 const path = require("path");
 
-// 현재 파일이 있는 디렉토리 경로 (__dirname)
-const officialDir = path.join(__dirname, "..", "uploads", "official");
+const officialDir = "/data/official";
 
 // 파일 저장 위치 및 파일 이름 설정
 const storage = multer.diskStorage({
