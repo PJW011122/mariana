@@ -4,8 +4,7 @@ const fsPromise = fs.promises;
 const path = require("path");
 const pgSQL = require("../../postgres_db/index");
 
-// 현재 파일이 있는 디렉토리 경로 (__dirname)
-const officialDir = path.join(__dirname, "..", "uploads", "official");
+const officialDir = "/data/official";
 
 // 파일 존재 여부 확인 및 삭제 함수
 async function deleteFile(filePath) {

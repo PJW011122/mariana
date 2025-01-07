@@ -3,8 +3,7 @@ const fs = require("fs");
 const path = require("path");
 const mime = require("mime-types");
 
-// 현재 파일이 있는 디렉토리 경로 (__dirname)
-const officialDir = path.join(__dirname, "..", "uploads", "official");
+const officialDir = "/data/official";
 
 router.route("/").get((req, res) => {
   const { fileName } = req.query;
